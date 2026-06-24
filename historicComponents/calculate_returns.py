@@ -49,7 +49,7 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
             
     # Load all unique tickers in this dataset
     unique_tickers = set()
-    col_name = 'Constituents' if 'Constituents' in df_quarters.columns else 'Unique_Nasdaq_Tickers'
+    col_name = 'Candidates' if 'Candidates' in df_quarters.columns else ('Constituents' if 'Constituents' in df_quarters.columns else 'Unique_Nasdaq_Tickers')
     for val in df_quarters[col_name]:
         if pd.notna(val):
             unique_tickers.update([t.strip() for t in str(val).split(',') if t.strip()])
@@ -321,4 +321,16 @@ if __name__ == '__main__':
         )
     except Exception as e:
         print(f"NASDAQ-100 and S&P 500 intersection portfolio calculation failed: {e}")
+
+    # 7. NASDAQ-100 Candidate Queue Total Return (Adj Close vs ^NDXT)
+    try:
+        calculate_portfolio_returns(
+            constituent_csv_name='nasdaq_candidate_queue.csv',
+            weight_scheme='cap',
+            return_type='total',
+            benchmark_ticker='^NDXT',
+            portfolio_name='nasdaq_candidate_queue_total_return'
+        )
+    except Exception as e:
+        print(f"NASDAQ-100 Candidate Queue portfolio calculation failed: {e}")
 
