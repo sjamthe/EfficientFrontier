@@ -9,7 +9,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(script_dir, '..', 'SP500')
 pkl_dir = os.path.join(data_dir, 'data_raw')
 
-def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', return_type='price', benchmark_ticker=None, portfolio_name='custom_portfolio'):
+def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', return_type='price', benchmark_ticker=None, portfolio_name='custom_portfolio', initial_value=100000.0):
     print(f"\n==================================================")
     print(f"Calculating returns for {portfolio_name}")
     print(f"Constituent CSV: {constituent_csv_name}")
@@ -98,6 +98,11 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
     # Set up portfolio returns tracking
     portfolio_daily_returns = pd.Series(index=df_prices.index, dtype=float)
     
+    # Track historical trades during rebalancing
+    trades_list = []
+    previous_weights = pd.Series(dtype=float)
+    current_portfolio_value = initial_value
+    
     # Run backtest quarter by quarter
     for idx, row in df_quarters.iterrows():
         q_name = row['Quarter']
@@ -154,7 +159,33 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
             
         current_weights = pd.Series(weights)
 
-        
+        # Calculate trades for the current quarter rebalancing
+        all_tickers = sorted(list(set(previous_weights.index) | set(current_weights.index)))
+        for ticker in all_tickers:
+            prev_w = previous_weights.get(ticker, 0.0)
+            new_w = current_weights.get(ticker, 0.0)
+            weight_change = new_w - prev_w
+            
+            if abs(weight_change) > 1e-6:
+                if prev_w == 0.0 and new_w > 0.0:
+                    trade_type = 'BUY'
+                elif prev_w > 0.0 and new_w == 0.0:
+                    trade_type = 'SELL'
+                else:
+                    trade_type = 'REBALANCE'
+                    
+                trades_list.append({
+                    'Quarter': q_name,
+                    'Date': first_day.strftime('%Y-%m-%d'),
+                    'Ticker': ticker,
+                    'Type': trade_type,
+                    'Prev_Weight_Pct': prev_w * 100.0,
+                    'New_Weight_Pct': new_w * 100.0,
+                    'Weight_Change_Pct': weight_change * 100.0,
+                    'Portfolio_Value_USD': current_portfolio_value,
+                    'Trade_Value_USD': weight_change * current_portfolio_value
+                })
+
         for t in q_days:
             # Check if we have stock returns for this day
             daily_stock_ret = df_stock_returns.loc[t, valid_constituents].fillna(0.0)
@@ -162,6 +193,9 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
             # Portfolio return is weighted sum of stock returns
             port_ret = np.sum(current_weights * daily_stock_ret)
             portfolio_daily_returns.loc[t] = port_ret
+            
+            # Update running portfolio value
+            current_portfolio_value = current_portfolio_value * (1.0 + port_ret)
             
             # Drift weights based on daily return
             drift_factor = (1.0 + daily_stock_ret) / (1.0 + port_ret)
@@ -171,6 +205,16 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
             sum_w = current_weights.sum()
             if sum_w > 0:
                 current_weights = current_weights / sum_w
+                
+        # Track drifted weights at the end of the quarter to compare with next quarter's target weights
+        previous_weights = pd.Series(current_weights)
+
+    # Save trades CSV if we have recorded trades
+    if trades_list:
+        df_trades = pd.DataFrame(trades_list)
+        output_trades_path = os.path.join(data_dir, f"{portfolio_name}_trades.csv")
+        df_trades.to_csv(output_trades_path, index=False)
+        print(f"Saved rebalancing trades to: {output_trades_path}")
 
     # Clean returns series
     portfolio_daily_returns = portfolio_daily_returns.dropna()
