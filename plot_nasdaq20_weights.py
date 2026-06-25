@@ -453,7 +453,7 @@ def main():
                             <tr>
                                 <th class="checkbox-cell"><input type="checkbox" id="masterCheckbox" onclick="toggleAllVisible(this)"></th>
                                 <th>Ticker</th>
-                                <th>New %</th>
+                                 <th id="headerNewPct">New %</th>
                                 <th>Change %</th>
                                 <th>Status</th>
                             </tr>
@@ -507,7 +507,7 @@ def main():
                         borderWidth: 1,
                         padding: 10,
                         itemSort: function(a, b) {
-                            return b.raw - a.raw;
+                            return b.parsed.y - a.parsed.y;
                         },
                         filter: function(item) {
                             return item.parsed.y > 0.001;
@@ -579,7 +579,16 @@ def main():
             tableBody.innerHTML = '';
             const search = filterText.toUpperCase();
             
-            const latestIdx = currentStartIndex + windowSize - 1;
+            let latestIdx = currentStartIndex + windowSize - 1;
+            if (latestIdx >= quarters.length) latestIdx = quarters.length - 1;
+            if (latestIdx < 0) latestIdx = 0;
+            
+            // Update table header title with current quarter
+            const latestQuarter = quarters[latestIdx] || '';
+            const headerEl = document.getElementById('headerNewPct');
+            if (headerEl) {
+                headerEl.textContent = `New % (${latestQuarter})`;
+            }
             
             // Create a list of datasets with their original indices
             const sortedList = datasets.map((ds, index) => ({ ds, index }))
@@ -588,11 +597,14 @@ def main():
                     return true;
                 });
                 
-            // Sort by current weight (New %) descending
+            // Sort by current weight (New %) descending, and secondary stable alphabetical sort
             sortedList.sort((a, b) => {
-                const weightA = a.ds.data[latestIdx];
-                const weightB = b.ds.data[latestIdx];
-                return weightB - weightA;
+                const weightA = a.ds.data[latestIdx] || 0;
+                const weightB = b.ds.data[latestIdx] || 0;
+                if (Math.abs(weightB - weightA) > 0.0001) {
+                    return weightB - weightA;
+                }
+                return a.ds.label.localeCompare(b.ds.label);
             });
             
             sortedList.forEach(item => {

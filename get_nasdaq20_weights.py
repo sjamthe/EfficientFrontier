@@ -5,7 +5,7 @@ import urllib.request
 import pandas as pd
 import numpy as np
 import yfinance as yf
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # 1. Path configuration
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -85,15 +85,63 @@ def main():
                         help="Weighting scheme: 'cap' for market capitalization weighted, 'equal' for equal weighted. Default is 'cap'.")
     parser.add_argument("-r", "--refresh-shares", action="store_true",
                         help="Force refresh shares outstanding from yfinance for all constituents (slower, ~1 min).")
+    parser.add_argument("-d", "--date", type=str, default=None,
+                        help="Query date in YYYY-MM-DD format to get historical constituents and weights.")
     args = parser.parse_args()
 
     # Step 1: Get constituents
-    df_const = fetch_constituents_from_wikipedia()
-    if df_const is None:
-        df_const = load_local_history_fallback()
-        if df_const is None:
-            print("Error: Could not retrieve Nasdaq-100 constituents list. Exiting.")
+    if args.date:
+        query_date_str = args.date
+        try:
+            query_date = datetime.strptime(query_date_str, "%Y-%m-%d").date()
+        except ValueError:
+            print(f"Error: Date format must be YYYY-MM-DD (got: {query_date_str})")
             return
+            
+        if not os.path.exists(nasdaq_csv):
+            print(f"Error: Nasdaq quarterly history file not found at {nasdaq_csv}")
+            return
+            
+        df_hist = pd.read_csv(nasdaq_csv)
+        df_hist['Start_Date_parsed'] = pd.to_datetime(df_hist['Start_Date']).dt.date
+        df_hist['End_Date_parsed'] = pd.to_datetime(df_hist['End_Date']).dt.date
+        
+        matching_rows = df_hist[(df_hist['Start_Date_parsed'] <= query_date) & (df_hist['End_Date_parsed'] >= query_date)]
+        if not matching_rows.empty:
+            matching_row = matching_rows.iloc[0]
+            quarter_name = matching_row['Quarter']
+            tickers = [t.strip() for t in str(matching_row['Constituents']).split(',') if t.strip()]
+            df_const = pd.DataFrame({
+                'Ticker': tickers,
+                'Company': tickers
+            })
+            print(f"Found Nasdaq-100 constituents for {query_date_str} in quarter {quarter_name} ({len(tickers)} tickers).")
+        else:
+            latest_row = df_hist.iloc[-1]
+            latest_end = pd.to_datetime(latest_row['End_Date']).date()
+            if query_date > latest_end:
+                print(f"Query date {query_date_str} is after the latest date in history ({latest_end}). Using latest history row.")
+                tickers = [t.strip() for t in str(latest_row['Constituents']).split(',') if t.strip()]
+                df_const = pd.DataFrame({
+                    'Ticker': tickers,
+                    'Company': tickers
+                })
+            else:
+                first_row = df_hist.iloc[0]
+                first_start = pd.to_datetime(first_row['Start_Date']).date()
+                print(f"Query date {query_date_str} is before the earliest date in history ({first_start}). Using earliest history row.")
+                tickers = [t.strip() for t in str(first_row['Constituents']).split(',') if t.strip()]
+                df_const = pd.DataFrame({
+                    'Ticker': tickers,
+                    'Company': tickers
+                })
+    else:
+        df_const = fetch_constituents_from_wikipedia()
+        if df_const is None:
+            df_const = load_local_history_fallback()
+            if df_const is None:
+                print("Error: Could not retrieve Nasdaq-100 constituents list. Exiting.")
+                return
 
     tickers = df_const['Ticker'].tolist()
     ticker_to_company = dict(zip(df_const['Ticker'], df_const['Company']))
@@ -175,14 +223,28 @@ def main():
         df_meta_combined.to_csv(metadata_csv, index=False)
         print(f"Updated metadata cache saved to {metadata_csv}")
 
-    # Step 4: Download current prices in bulk
-    print(f"\nDownloading current stock prices for {len(tickers)} tickers...")
-    try:
-        df_prices = yf.download(tickers, period='5d', progress=False)
-    except Exception as e:
-        print(f"Error downloading prices in bulk: {e}")
-        # Try a smaller fallback or loop
-        df_prices = pd.DataFrame()
+    # Step 4: Download stock prices
+    if args.date:
+        # end_dt is query_date + 1 day (exclusive in yfinance)
+        end_dt = query_date + timedelta(days=1)
+        # start_dt is query_date - 10 days to guarantee at least one trading day is captured
+        start_dt = query_date - timedelta(days=10)
+        start_str = start_dt.strftime('%Y-%m-%d')
+        end_str = end_dt.strftime('%Y-%m-%d')
+        print(f"\nDownloading historical stock prices for {len(tickers)} tickers between {start_str} and {end_str}...")
+        try:
+            df_prices = yf.download(tickers, start=start_str, end=end_str, progress=False)
+        except Exception as e:
+            print(f"Error downloading prices in bulk: {e}")
+            df_prices = pd.DataFrame()
+    else:
+        print(f"\nDownloading current stock prices for {len(tickers)} tickers...")
+        try:
+            df_prices = yf.download(tickers, period='5d', progress=False)
+        except Exception as e:
+            print(f"Error downloading prices in bulk: {e}")
+            # Try a smaller fallback or loop
+            df_prices = pd.DataFrame()
 
     latest_prices = {}
     failed_prices = []
@@ -206,7 +268,10 @@ def main():
         if pd.isna(price):
             try:
                 t_obj = yf.Ticker(ticker)
-                hist = t_obj.history(period='5d')
+                if args.date:
+                    hist = t_obj.history(start=start_str, end=end_str)
+                else:
+                    hist = t_obj.history(period='5d')
                 if not hist.empty:
                     price = hist['Close'].iloc[-1]
             except Exception:
@@ -250,6 +315,9 @@ def main():
     if args.weight_scheme == 'cap':
         total_mcap = df_top20['Market_Cap_USD'].sum()
         df_top20['Weight'] = df_top20['Market_Cap_USD'] / total_mcap
+        # Apply 10% weight ceiling to prevent extreme outlier dominance and re-normalize
+        df_top20['Weight'] = df_top20['Weight'].clip(upper=0.10)
+        df_top20['Weight'] = df_top20['Weight'] / df_top20['Weight'].sum()
     else:
         df_top20['Weight'] = 0.05 # 5% each
 
@@ -260,13 +328,22 @@ def main():
         df_top20['Shares_To_Buy_Rounded'] = df_top20['Shares_To_Buy'].round()
 
     # Save to CSV
-    df_top20.to_csv(output_weights_csv, index=False)
-    print(f"\nSaved current weights to: {output_weights_csv}")
+    if args.date:
+        output_csv_path = os.path.join(data_dir, f'nasdaq_20_weights_{query_date_str}.csv')
+    else:
+        output_csv_path = output_weights_csv
+        
+    df_top20.to_csv(output_csv_path, index=False)
+    print(f"\nSaved weights to: {output_csv_path}")
 
     # Step 8: Print beautiful results table
     print("\n" + "=" * 105)
-    print(f"                      CURRENT NASDAQ-20 PORTFOLIO WEIGHTS & ALLOCATIONS")
-    print(f"                      Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    if args.date:
+        print(f"                      NASDAQ-20 PORTFOLIO WEIGHTS & ALLOCATIONS ({query_date_str})")
+        print(f"                      Query Date: {query_date_str}")
+    else:
+        print(f"                      CURRENT NASDAQ-20 PORTFOLIO WEIGHTS & ALLOCATIONS")
+        print(f"                      Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"                      Weighting Scheme: {args.weight_scheme.upper()}")
     if args.portfolio_value is not None:
         print(f"                      Total Portfolio Value: ${args.portfolio_value:,.2f}")
@@ -296,8 +373,11 @@ def main():
         total_weight_pct = df_top20['Weight'].sum() * 100
         print(f"{'TOTAL':<48}  {df_top20['Market_Cap_USD'].sum()/1e9:>15.2f}B  {total_weight_pct:>9.2f}%")
     print("=" * 105)
-    print("\nNote: Market Cap and Weight calculations are based on current stock prices and cached shares outstanding.")
-    print("Run with '--refresh-shares' to update the cached shares outstanding from yfinance.")
+    if args.date:
+        print("\nNote: Market Cap and Weight calculations are based on historical stock prices and cached shares outstanding.")
+    else:
+        print("\nNote: Market Cap and Weight calculations are based on current stock prices and cached shares outstanding.")
+        print("Run with '--refresh-shares' to update the cached shares outstanding from yfinance.")
 
 if __name__ == "__main__":
     main()
