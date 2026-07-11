@@ -2,6 +2,7 @@ import os
 import urllib.request
 import pandas as pd
 import numpy as np
+from nasdaq_history_reconstructor import reconstruct_nasdaq_history
 
 # 1. Paths configuration
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -12,7 +13,7 @@ if not os.path.exists(output_dir):
 output_csv_path = os.path.join(output_dir, 'nasdaq_quarterly_history.csv')
 
 # 2. Fetch Nasdaq-100 data from Wikipedia
-nasdaq_url = "https://en.wikipedia.org/wiki/Nasdaq-100"
+nasdaq_url = "https://en.wikipedia.org/wiki/List_of_NASDAQ-100_companies"
 print(f"Fetching Nasdaq-100 constituents and changes from Wikipedia: {nasdaq_url}")
 req = urllib.request.Request(nasdaq_url, headers={'User-Agent': 'Mozilla/5.0'})
 try:
@@ -23,9 +24,9 @@ except Exception as e:
     raise
 
 tables = pd.read_html(html)
-# Table 5 is Current Constituents, Table 6 is Component Changes
-df_current = tables[5]
-df_changes = tables[6]
+# Table 0 is Current Constituents, Table 1 is Component Changes
+df_current = tables[0]
+df_changes = tables[1]
 
 # Flatten MultiIndex columns if present in changes
 if isinstance(df_changes.columns, pd.MultiIndex):
@@ -72,24 +73,26 @@ for date in sorted_change_dates_desc:
 # Sort timeline dates ascending
 sorted_timeline_dates = sorted(timeline.keys())
 
-# 4. Generate calendar quarters starting from the earliest change date (2007)
-start_date = df_changes['Date'].min()
+# 4. Generate calendar quarters starting from 1997Q1
+# Retrieve reconstructed historical quarters (1997Q1 - 2006Q4)
+try:
+    hist_quarters = reconstruct_nasdaq_history(1997, 2006)
+except Exception as e:
+    print(f"Error running reconstructor: {e}")
+    hist_quarters = {}
+
+start_year = 2007
+start_q = 1
 end_date = pd.Timestamp.now()
 
 current_year = end_date.year
 current_month = end_date.month
 current_q = (current_month - 1) // 3 + 1
 
-start_year = start_date.year
-start_month = start_date.month
-start_q = (start_month - 1) // 3 + 1
-
 quarters = []
+# Quarters from 2007Q1 to present
 for y in range(start_year, current_year + 1):
     for q in [1, 2, 3, 4]:
-        # Skip quarters before the earliest date
-        if y == start_year and q < start_q:
-            continue
         # Skip quarters in the future
         if y == current_year and q > current_q:
             continue
@@ -116,6 +119,23 @@ for y in range(start_year, current_year + 1):
 
 # 5. Aggregate constituents, additions, and removals for each quarter
 quarter_results = []
+
+# First, append all historical quarters (1997Q1 - 2006Q4)
+for q_name in sorted(hist_quarters.keys(), key=lambda x: (int(x[:4]), int(x[5]))):
+    h = hist_quarters[q_name]
+    quarter_results.append({
+        'Quarter': q_name,
+        'Start_Date': h['Start_Date'],
+        'End_Date': h['End_Date'],
+        'Additions_Count': len(h['Additions']),
+        'Removals_Count': len(h['Removals']),
+        'Constituents_Count': len(h['Constituents']),
+        'Additions': ','.join(h['Additions']),
+        'Removals': ','.join(h['Removals']),
+        'Constituents': ','.join(h['Constituents'])
+    })
+
+# Then, append post-2007 quarters using Wikipedia changes
 for q_name, q_start, q_end in quarters:
     # Find all changes during this quarter
     q_added = []
@@ -165,7 +185,7 @@ try:
 
     # Set style
     plt.style.use('seaborn-v0_8-whitegrid' if 'seaborn-v0_8-whitegrid' in plt.style.available else 'default')
-    fig, ax = plt.subplots(figsize=(14, 7), dpi=300)
+    fig, ax = plt.subplots(figsize=(16, 8), dpi=300)
 
     # Sort chronologically by Quarter
     df_plot = df_quarters.copy()
@@ -174,10 +194,10 @@ try:
     df_plot = df_plot.sort_values(['Year', 'Q']).reset_index(drop=True)
 
     # Plot constituents count
-    ax.plot(df_plot['Quarter'], df_plot['Constituents_Count'], marker='o', color='#2ca02c', linewidth=1.8, markersize=2.5, label='Constituents Count')
+    ax.plot(df_plot['Quarter'], df_plot['Constituents_Count'], marker='o', color='#2ca02c', linewidth=1.2, markersize=1.5, label='Constituents Count')
 
     # Labels and title
-    ax.set_title('NASDAQ-100 Constituents Count by Quarter (2007 - Present)', fontsize=14, fontweight='bold', pad=15)
+    ax.set_title('NASDAQ-100 Constituents Count by Quarter (1997 - Present)', fontsize=14, fontweight='bold', pad=15)
     ax.set_xlabel('Quarter', fontsize=11, fontweight='semibold', labelpad=10)
     ax.set_ylabel('Number of Tickers', fontsize=11, fontweight='semibold', labelpad=10)
 
@@ -185,8 +205,8 @@ try:
     ax.xaxis.set_major_locator(ticker.MultipleLocator(4))
     plt.xticks(rotation=90, fontsize=8)
 
-    # Adjust y limits to focus on the range (e.g., 95 to 110)
-    ax.set_ylim(95, 110)
+    # Adjust y limits to focus on the range (e.g., 90 to 110)
+    ax.set_ylim(90, 110)
     ax.yaxis.set_major_locator(ticker.MultipleLocator(2))
 
     # Grid
@@ -206,9 +226,10 @@ try:
     print(f"Chart updated and saved to: {plot_img_path}")
 
     # Copy to artifact folder if it exists
-    artifact_dir = '/Users/sjamthe/.gemini/antigravity-ide/brain/c97a0c5d-2fd6-4ac1-ab91-853c8103ac79'
+    artifact_dir = '/Users/sjamthe/.gemini/antigravity-ide/brain/278cb75b-212b-4bbd-be70-50694e134c47'
     if os.path.exists(artifact_dir):
         import shutil
         shutil.copy(plot_img_path, os.path.join(artifact_dir, 'nasdaq_constituents_chart.png'))
 except Exception as e:
     print(f"Could not generate plot: {e}")
+

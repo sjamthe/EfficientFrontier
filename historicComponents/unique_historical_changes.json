@@ -1,0 +1,1386 @@
+[
+  {
+    "Date": "2003-12-22",
+    "Year": 2003,
+    "Added_Ticker": "ATYT",
+    "Added_Company": "ATI Technologies Inc.",
+    "Removed_Ticker": "ADCT",
+    "Removed_Company": "ADC Telecommunications, Inc."
+  },
+  {
+    "Date": "2003-12-22",
+    "Year": 2003,
+    "Added_Ticker": "CECO",
+    "Added_Company": "Career Education Corporation",
+    "Removed_Ticker": "BRCD",
+    "Removed_Company": "Brocade Communications Systems, Inc."
+  },
+  {
+    "Date": "2003-12-22",
+    "Year": 2003,
+    "Added_Ticker": "GRMN",
+    "Added_Company": "Garmin Ltd.",
+    "Removed_Ticker": "CIEN",
+    "Removed_Company": "CIENA Corporation"
+  },
+  {
+    "Date": "2003-12-22",
+    "Year": 2003,
+    "Added_Ticker": "ISIL",
+    "Added_Company": "Intersil Corporation",
+    "Removed_Ticker": "ERICY",
+    "Removed_Company": "LM Ericsson Telephone Company"
+  },
+  {
+    "Date": "2003-12-22",
+    "Year": 2003,
+    "Added_Ticker": "LRCX",
+    "Added_Company": "Lam Research Corporation",
+    "Removed_Ticker": "HGSI",
+    "Removed_Company": "Human Genome Sciences, Inc."
+  },
+  {
+    "Date": "2003-12-22",
+    "Year": 2003,
+    "Added_Ticker": "LVLT",
+    "Added_Company": "Level 3 Communications, Inc.",
+    "Removed_Ticker": "ICOS",
+    "Removed_Company": "ICOS Corporation"
+  },
+  {
+    "Date": "2003-12-22",
+    "Year": 2003,
+    "Added_Ticker": "MRVL",
+    "Added_Company": "Marvell Technology Group, Inc.",
+    "Removed_Ticker": "MNST",
+    "Removed_Company": "Monster Worldwide Inc."
+  },
+  {
+    "Date": "2003-12-22",
+    "Year": 2003,
+    "Added_Ticker": "RIMM",
+    "Added_Company": "Research in Motion Limited",
+    "Removed_Ticker": "RFMD",
+    "Removed_Company": "RF Micro Devices, Inc."
+  },
+  {
+    "Date": "2002-06-03",
+    "Year": 2002,
+    "Added_Ticker": "DLTR",
+    "Added_Company": "Dollar Tree Stores, Inc.",
+    "Removed_Ticker": "ADLAE",
+    "Removed_Company": "Adelphia Communications Corporation"
+  },
+  {
+    "Date": "2002-07-15",
+    "Year": 2002,
+    "Added_Ticker": "SIAL",
+    "Added_Company": "Sigma Aldrich Corporation",
+    "Removed_Ticker": "IMNX",
+    "Removed_Company": "Immunex Corporation"
+  },
+  {
+    "Date": "2002-07-24",
+    "Year": 2002,
+    "Added_Ticker": "LNCR",
+    "Added_Company": "Lincare Holdings Inc. WCOEQ WorldCom, Inc.",
+    "Removed_Ticker": "WCOEQ",
+    "Removed_Company": "WorldCom, Inc."
+  },
+  {
+    "Date": "2002-11-07",
+    "Year": 2002,
+    "Added_Ticker": "TEVA",
+    "Added_Company": "Teva Pharmaceutical Industries Limited",
+    "Removed_Ticker": "CEFT",
+    "Removed_Company": "Concord EFS, Inc."
+  },
+  {
+    "Date": "2002-11-19",
+    "Year": 2002,
+    "Added_Ticker": "CMCSA",
+    "Added_Company": "Comcast Corporation Class A",
+    "Removed_Ticker": "CMCSK",
+    "Removed_Company": "Comcast Corporation -Special Class A"
+  },
+  {
+    "Date": "2002-12-16",
+    "Year": 2002,
+    "Added_Ticker": "PDCO",
+    "Added_Company": "Patterson Dental Company",
+    "Removed_Ticker": "GMSTE",
+    "Removed_Company": "Gemstar-TV Guide International Inc."
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "APCC",
+    "Added_Company": "American Power Conversion Corporation",
+    "Removed_Ticker": "ABGX",
+    "Removed_Company": "Abgenix, Inc."
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "CHRW",
+    "Added_Company": "C.H. Robinson Worldwide, Inc.",
+    "Removed_Ticker": "ADRX",
+    "Removed_Company": "Andrx Group"
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "EXPD",
+    "Added_Company": "Expeditors International of Washington, Inc.",
+    "Removed_Ticker": "AMCC",
+    "Removed_Company": "Applied Micro Circuits Corporation"
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "FAST",
+    "Added_Company": "Fastenal Company",
+    "Removed_Ticker": "ATML",
+    "Removed_Company": "Atmel Corporation"
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "FHCC",
+    "Added_Company": "First Health Group Corp.",
+    "Removed_Ticker": "CHTR",
+    "Removed_Company": "Charter Communications, Inc."
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "GNTX",
+    "Added_Company": "Gentex Corporation",
+    "Removed_Ticker": "CNXT",
+    "Removed_Company": "Conexant Systems, Inc."
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "HSIC",
+    "Added_Company": "Henry Schein, Inc.",
+    "Removed_Ticker": "CYTC",
+    "Removed_Company": "Cytyc Corporation"
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "LAMR",
+    "Added_Company": "Lamar Advertising Company",
+    "Removed_Ticker": "IDTI",
+    "Removed_Company": "Integrated Device Technology, Inc."
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "PETM",
+    "Added_Company": "PETsMART, Inc.",
+    "Removed_Ticker": "IMCL",
+    "Removed_Company": "ImClone Systems Incorporated"
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "PIXR",
+    "Added_Company": "Pixar",
+    "Removed_Ticker": "ITWO",
+    "Removed_Company": "i2 Technologies, Inc."
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "PTEN",
+    "Added_Company": "Patterson-UTI Energy, Inc.",
+    "Removed_Ticker": "PDLI",
+    "Removed_Company": "Protein Design Labs, Inc."
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "ROST",
+    "Added_Company": "Ross Stores, Inc.",
+    "Removed_Ticker": "PMCS",
+    "Removed_Company": "PMC - Sierra, Inc."
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "RYAAY",
+    "Added_Company": "Ryanair Holdings plc",
+    "Removed_Ticker": "RATL",
+    "Removed_Company": "Rational Software Corporation"
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "WFMI",
+    "Added_Company": "Whole Foods Market, Inc.",
+    "Removed_Ticker": "SEPR",
+    "Removed_Company": "Sepracor Inc."
+  },
+  {
+    "Date": "2002-12-23",
+    "Year": 2002,
+    "Added_Ticker": "XRAY",
+    "Added_Company": "DENTSPLY International Inc.",
+    "Removed_Ticker": "VTSS",
+    "Removed_Company": "Vitesse Semiconductor Corporation"
+  },
+  {
+    "Date": "2001-02-13",
+    "Year": 2001,
+    "Added_Ticker": "BRCD",
+    "Added_Company": "Brocade Communication Systems, Inc.",
+    "Removed_Ticker": "SDLI",
+    "Removed_Company": "SDL, Inc."
+  },
+  {
+    "Date": "2001-03-13",
+    "Year": 2001,
+    "Added_Ticker": "NVLS",
+    "Added_Company": "Novellus Systems, Inc.",
+    "Removed_Ticker": "BMCS",
+    "Removed_Company": "BMC Software, Inc."
+  },
+  {
+    "Date": "2001-05-31",
+    "Year": 2001,
+    "Added_Ticker": "NVDA",
+    "Added_Company": "NVIDIA Corporation",
+    "Removed_Ticker": "VSTR",
+    "Removed_Company": "VoiceStream Wireless Corporation"
+  },
+  {
+    "Date": "2001-10-04",
+    "Year": 2001,
+    "Added_Ticker": "ADRX",
+    "Added_Company": "Andrx Group",
+    "Removed_Ticker": "ATHMQ",
+    "Removed_Company": "At Home Corporation"
+  },
+  {
+    "Date": "2001-10-05",
+    "Year": 2001,
+    "Added_Ticker": "GILD",
+    "Added_Company": "Gilead Sciences, Inc.",
+    "Removed_Ticker": "EXDSQ",
+    "Removed_Company": "Exodus Communications, Inc."
+  },
+  {
+    "Date": "2001-12-17",
+    "Year": 2001,
+    "Added_Ticker": "APOL",
+    "Added_Company": "Apollo Group, Inc.",
+    "Removed_Ticker": "XOXO",
+    "Removed_Company": "XO Communications, Inc."
+  },
+  {
+    "Date": "2001-12-24",
+    "Year": 2001,
+    "Added_Ticker": "CDWC",
+    "Added_Company": "CDW Computer Centers, Inc.",
+    "Removed_Ticker": "ARBA",
+    "Removed_Company": "Ariba, Inc."
+  },
+  {
+    "Date": "2001-12-24",
+    "Year": 2001,
+    "Added_Ticker": "CEPH",
+    "Added_Company": "Cephalon, Inc.",
+    "Removed_Ticker": "BVSN",
+    "Removed_Company": "BroadVision, Inc."
+  },
+  {
+    "Date": "2001-12-24",
+    "Year": 2001,
+    "Added_Ticker": "CHTR",
+    "Added_Company": "Charter Communications, Inc.",
+    "Removed_Ticker": "CMGI",
+    "Removed_Company": "CMGI, Inc."
+  },
+  {
+    "Date": "2001-12-24",
+    "Year": 2001,
+    "Added_Ticker": "CYTC",
+    "Added_Company": "CYTYC Corporation",
+    "Removed_Ticker": "CNET",
+    "Removed_Company": "CNET Networks, Inc."
+  },
+  {
+    "Date": "2001-12-24",
+    "Year": 2001,
+    "Added_Ticker": "ESRX",
+    "Added_Company": "Express Scripts, Inc.",
+    "Removed_Ticker": "COMS",
+    "Removed_Company": "3Com Corporation"
+  },
+  {
+    "Date": "2001-12-24",
+    "Year": 2001,
+    "Added_Ticker": "ICOS",
+    "Added_Company": "ICOS Corporation",
+    "Removed_Ticker": "INKT",
+    "Removed_Company": "Inktomi Corporation"
+  },
+  {
+    "Date": "2001-12-24",
+    "Year": 2001,
+    "Added_Ticker": "IDTI",
+    "Added_Company": "Integrated Device Technology, Inc.",
+    "Removed_Ticker": "LVLT",
+    "Removed_Company": "Level 3 Communications, Inc"
+  },
+  {
+    "Date": "2001-12-24",
+    "Year": 2001,
+    "Added_Ticker": "IMCL",
+    "Added_Company": "ImClone Systems Incorporated",
+    "Removed_Ticker": "MCLD",
+    "Removed_Company": "McLeodUSA Incorporated"
+  },
+  {
+    "Date": "2001-12-24",
+    "Year": 2001,
+    "Added_Ticker": "IVGN",
+    "Added_Company": "Invitrogen Corporation",
+    "Removed_Ticker": "MFNX",
+    "Removed_Company": "Metromedia Fiber Network, Inc."
+  },
+  {
+    "Date": "2001-12-24",
+    "Year": 2001,
+    "Added_Ticker": "PDLI",
+    "Added_Company": "Protein Design Labs, Inc.",
+    "Removed_Ticker": "NOVL",
+    "Removed_Company": "Novell, Inc."
+  },
+  {
+    "Date": "2001-12-24",
+    "Year": 2001,
+    "Added_Ticker": "SEPR",
+    "Added_Company": "Sepracor Inc.",
+    "Removed_Ticker": "PALM",
+    "Removed_Company": "Palm, Inc."
+  },
+  {
+    "Date": "2001-12-24",
+    "Year": 2001,
+    "Added_Ticker": "SNPS",
+    "Added_Company": "Synopsys, Inc.",
+    "Removed_Ticker": "PMTC",
+    "Removed_Company": "Parametric Technology Corporation"
+  },
+  {
+    "Date": "2001-12-24",
+    "Year": 2001,
+    "Added_Ticker": "SYMC",
+    "Added_Company": "Symantec Corporation",
+    "Removed_Ticker": "RNWK",
+    "Removed_Company": "RealNetworks, Inc."
+  },
+  {
+    "Date": "2000-06-09",
+    "Year": 2000,
+    "Added_Ticker": "VRSN",
+    "Added_Company": "VeriSign, Inc.",
+    "Removed_Ticker": "NSOL",
+    "Removed_Company": "Network Solutions, Inc."
+  },
+  {
+    "Date": "2000-09-07",
+    "Year": 2000,
+    "Added_Ticker": "JNPR",
+    "Added_Company": "Juniper Networks, Inc.",
+    "Removed_Ticker": "VISX",
+    "Removed_Company": "VISX, Incorporated"
+  },
+  {
+    "Date": "2000-10-27",
+    "Year": 2000,
+    "Added_Ticker": "ARBA",
+    "Added_Company": "Ariba, Inc.",
+    "Removed_Ticker": "NTLI",
+    "Removed_Company": "NTL Incorporated"
+  },
+  {
+    "Date": "2000-10-30",
+    "Year": 2000,
+    "Added_Ticker": "BRCM",
+    "Added_Company": "Broadcom Corporation - Class A",
+    "Removed_Ticker": "LCOS",
+    "Removed_Company": "Lycos, Inc."
+  },
+  {
+    "Date": "2000-11-06",
+    "Year": 2000,
+    "Added_Ticker": "PALM",
+    "Added_Company": "Palm, Inc.",
+    "Removed_Ticker": "GBLX",
+    "Removed_Company": "Global Crossing Ltd."
+  },
+  {
+    "Date": "2000-12-18",
+    "Year": 2000,
+    "Added_Ticker": "ABGX",
+    "Added_Company": "Abgenix, Inc.",
+    "Removed_Ticker": "ADPT",
+    "Removed_Company": "Adaptec, Inc."
+  },
+  {
+    "Date": "2000-12-18",
+    "Year": 2000,
+    "Added_Ticker": "BEAS",
+    "Added_Company": "BEA Systems, Inc.",
+    "Removed_Ticker": "APCC",
+    "Removed_Company": "American Power Conversion Corporation"
+  },
+  {
+    "Date": "2000-12-18",
+    "Year": 2000,
+    "Added_Ticker": "CHKP",
+    "Added_Company": "Check Point Software Technologies Ltd.",
+    "Removed_Ticker": "APOL",
+    "Removed_Company": "Apollo Group, Inc."
+  },
+  {
+    "Date": "2000-12-18",
+    "Year": 2000,
+    "Added_Ticker": "EXDS",
+    "Added_Company": "Exodus Communications, Inc.",
+    "Removed_Ticker": "DLTR",
+    "Removed_Company": "Dollar Tree Stores, Inc."
+  },
+  {
+    "Date": "2000-12-18",
+    "Year": 2000,
+    "Added_Ticker": "FLEX",
+    "Added_Company": "Flextronics International Ltd.",
+    "Removed_Ticker": "LGTO",
+    "Removed_Company": "Legato Systems, Inc."
+  },
+  {
+    "Date": "2000-12-18",
+    "Year": 2000,
+    "Added_Ticker": "HGSI",
+    "Added_Company": "Human Genome Sciences, Inc.",
+    "Removed_Ticker": "MLHR",
+    "Removed_Company": "Herman Miller, Inc."
+  },
+  {
+    "Date": "2000-12-18",
+    "Year": 2000,
+    "Added_Ticker": "IDPH",
+    "Added_Company": "IDEC Pharmaceuticals Corporation",
+    "Removed_Ticker": "NETA",
+    "Removed_Company": "Network Associates, Inc."
+  },
+  {
+    "Date": "2000-12-18",
+    "Year": 2000,
+    "Added_Ticker": "INKT",
+    "Added_Company": "Inktomi Corporation",
+    "Removed_Ticker": "NWAC",
+    "Removed_Company": "Northwest Airlines Corporation"
+  },
+  {
+    "Date": "2000-12-18",
+    "Year": 2000,
+    "Added_Ticker": "MERQ",
+    "Added_Company": "Mercury Interactive Corporation",
+    "Removed_Ticker": "PHSY",
+    "Removed_Company": "PacifiCare Health Systems, Inc"
+  },
+  {
+    "Date": "2000-12-18",
+    "Year": 2000,
+    "Added_Ticker": "MLNM",
+    "Added_Company": "Millennium Pharmaceuticals, Inc.",
+    "Removed_Ticker": "QTRN",
+    "Removed_Company": "Quintiles Transnational Corp."
+  },
+  {
+    "Date": "2000-12-18",
+    "Year": 2000,
+    "Added_Ticker": "RATL",
+    "Added_Company": "Rational Software Corporation",
+    "Removed_Ticker": "SIAL",
+    "Removed_Company": "Sigma-Aldrich Corporation"
+  },
+  {
+    "Date": "2000-12-18",
+    "Year": 2000,
+    "Added_Ticker": "TMPW",
+    "Added_Company": "TMP Worldwide Inc.",
+    "Removed_Ticker": "SNPS",
+    "Removed_Company": "Synopsys, Inc."
+  },
+  {
+    "Date": "1999-01-13",
+    "Year": 1999,
+    "Added_Ticker": "CMVT",
+    "Added_Company": "Comverse Technology, Inc.",
+    "Removed_Ticker": "HBOC",
+    "Removed_Company": "HBO & Company"
+  },
+  {
+    "Date": "1999-03-10",
+    "Year": 1999,
+    "Added_Ticker": "ATHM",
+    "Added_Company": "At Home Corporation",
+    "Removed_Ticker": "TCOMA",
+    "Removed_Company": "Tele-Communications, Inc."
+  },
+  {
+    "Date": "1999-03-18",
+    "Year": 1999,
+    "Added_Ticker": "CMGI",
+    "Added_Company": "CMGI, Inc.",
+    "Removed_Ticker": "NSCP",
+    "Removed_Company": "Netscape Communications Corporation"
+  },
+  {
+    "Date": "1999-05-05",
+    "Year": 1999,
+    "Added_Ticker": "UNPH",
+    "Added_Company": "Uniphase Corporation",
+    "Removed_Ticker": "JCOR",
+    "Removed_Company": "Jacor Communications Inc."
+  },
+  {
+    "Date": "1999-05-25",
+    "Year": 1999,
+    "Added_Ticker": "CNET",
+    "Added_Company": "CNET, Inc.",
+    "Removed_Ticker": "MCCRK",
+    "Removed_Company": "McCormick & Company, Incorporated"
+  },
+  {
+    "Date": "1999-05-28",
+    "Year": 1999,
+    "Added_Ticker": "LCOS",
+    "Added_Company": "Lycos, Inc.",
+    "Removed_Ticker": "FORE",
+    "Removed_Company": "FORE Systems, Inc."
+  },
+  {
+    "Date": "1999-06-10",
+    "Year": 1999,
+    "Added_Ticker": "VISX",
+    "Added_Company": "VISX, Incorporated",
+    "Removed_Ticker": "NOBE",
+    "Removed_Company": "Nordstrom, Inc."
+  },
+  {
+    "Date": "1999-06-25",
+    "Year": 1999,
+    "Added_Ticker": "SEBL",
+    "Added_Company": "Siebel Systems, Inc.",
+    "Removed_Ticker": "ASND",
+    "Removed_Company": "Ascend Communications, Inc."
+  },
+  {
+    "Date": "1999-07-14",
+    "Year": 1999,
+    "Added_Ticker": "CNXT",
+    "Added_Company": "Conexant Systems, Inc.",
+    "Removed_Ticker": "AMFM",
+    "Removed_Company": "Chancellor Media Corporation"
+  },
+  {
+    "Date": "1999-08-04",
+    "Year": 1999,
+    "Added_Ticker": "CIEN",
+    "Added_Company": "CIENA Corporation",
+    "Removed_Ticker": "QNTM",
+    "Removed_Company": "Quantum Corporation"
+  },
+  {
+    "Date": "1999-09-09",
+    "Year": 1999,
+    "Added_Ticker": "GBLX",
+    "Added_Company": "Global Crossing Ltd",
+    "Removed_Ticker": "FDLNB",
+    "Removed_Company": "Food Lion, Inc."
+  },
+  {
+    "Date": "1999-10-06",
+    "Year": 1999,
+    "Added_Ticker": "EBAY",
+    "Added_Company": "eBay Inc.",
+    "Removed_Ticker": "CNTO",
+    "Removed_Company": "Centocor, Inc."
+  },
+  {
+    "Date": "1999-10-27",
+    "Year": 1999,
+    "Added_Ticker": "VSTR",
+    "Added_Company": "VoiceStream Wireless Corp.",
+    "Removed_Ticker": "CEXP",
+    "Removed_Company": "Corporate Express, Inc."
+  },
+  {
+    "Date": "1999-11-22",
+    "Year": 1999,
+    "Added_Ticker": "RNWK",
+    "Added_Company": "RealNetworks, Inc.",
+    "Removed_Ticker": "COMR",
+    "Removed_Company": "Comair Holdings, Inc."
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "ADLAC",
+    "Added_Company": "Adelphia Communications Corporation",
+    "Removed_Ticker": "WTHG",
+    "Removed_Company": "Worthington Industries, Inc."
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "AMCC",
+    "Added_Company": "Applied Micro Circuits Corporation",
+    "Removed_Ticker": "CBRL",
+    "Removed_Company": "CBRL Group Inc."
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "BVSN",
+    "Added_Company": "BroadVision, Inc.",
+    "Removed_Ticker": "FHCC",
+    "Removed_Company": "First Health Group Corp."
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "DISH",
+    "Added_Company": "EchoStar Communications Corporation",
+    "Removed_Ticker": "ROST",
+    "Removed_Company": "Ross Stores, Inc."
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "ITWO",
+    "Added_Company": "i2 Technologies, Inc.",
+    "Removed_Ticker": "FAST",
+    "Removed_Company": "Fastenal Company"
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "LGTO",
+    "Added_Company": "Legato Systems, Inc.",
+    "Removed_Ticker": "ANDW",
+    "Removed_Company": "Andrew Corporation"
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "MEDI",
+    "Added_Company": "MedImmune, Inc.",
+    "Removed_Ticker": "EFII",
+    "Removed_Company": "Electronics for Imaging, Inc."
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "MFNX",
+    "Added_Company": "Metromedia Fiber Network, Inc.",
+    "Removed_Ticker": "RTRSY",
+    "Removed_Company": "Reuters Group PLC"
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "NSOL",
+    "Added_Company": "Network Solutions, Inc.",
+    "Removed_Ticker": "CATP",
+    "Removed_Company": "Cambridge Technology Partners, Inc."
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "NTAP",
+    "Added_Company": "Network Appliance, Inc.",
+    "Removed_Ticker": "ADSK",
+    "Removed_Company": "Autodesk, Inc."
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "NXLK",
+    "Added_Company": "NEXTLINK Communications, Inc.",
+    "Removed_Ticker": "MUEI",
+    "Removed_Company": "Micron Electronics, Inc."
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "PMCS",
+    "Added_Company": "PMC - Sierra, Inc.",
+    "Removed_Ticker": "LNCR",
+    "Removed_Company": "Lincare Holdings, Inc."
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "QLGC",
+    "Added_Company": "QLogic Corporation",
+    "Removed_Ticker": "STEI",
+    "Removed_Company": "Stewart Enterprises, Inc."
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "RFMD",
+    "Added_Company": "RF Micro Devices, Inc.",
+    "Removed_Ticker": "RXSD",
+    "Removed_Company": "Rexall Sundown, Inc."
+  },
+  {
+    "Date": "1999-12-20",
+    "Year": 1999,
+    "Added_Ticker": "SDLI",
+    "Added_Company": "SDL, Inc.",
+    "Removed_Ticker": "TECD",
+    "Removed_Company": "Tech Data Corporation"
+  },
+  {
+    "Date": "1999-12-30",
+    "Year": 1999,
+    "Added_Ticker": "GMST",
+    "Added_Company": "Gemstar International Group, Limited",
+    "Removed_Ticker": "QWST",
+    "Removed_Company": "Qwest Communications International, Inc."
+  },
+  {
+    "Date": "1998-01-07",
+    "Year": 1998,
+    "Added_Ticker": "AMFM",
+    "Added_Company": "Chancellor Media Corporation",
+    "Removed_Ticker": "OSSI",
+    "Removed_Company": "Outback Steakhouse, Inc."
+  },
+  {
+    "Date": "1998-01-07",
+    "Year": 1998,
+    "Added_Ticker": "APOL",
+    "Added_Company": "Apollo Group, Inc. ClA",
+    "Removed_Ticker": "IFMX",
+    "Removed_Company": "Informix Corporation"
+  },
+  {
+    "Date": "1998-01-07",
+    "Year": 1998,
+    "Added_Ticker": "AWIN",
+    "Added_Company": "Allied Waste Industries, Inc",
+    "Removed_Ticker": "PETM",
+    "Removed_Company": "PETsMART, Inc."
+  },
+  {
+    "Date": "1998-01-07",
+    "Year": 1998,
+    "Added_Ticker": "CATP",
+    "Added_Company": "Cambridge Technology Partners, Inc.",
+    "Removed_Ticker": "BOST",
+    "Removed_Company": "Boston Chicken, Inc."
+  },
+  {
+    "Date": "1998-01-07",
+    "Year": 1998,
+    "Added_Ticker": "CTXS",
+    "Added_Company": "Citrix Systems, Inc.",
+    "Removed_Ticker": "GEMS",
+    "Removed_Company": "Glenayre Technologies, Inc."
+  },
+  {
+    "Date": "1998-01-07",
+    "Year": 1998,
+    "Added_Ticker": "DURA",
+    "Added_Company": "Dura Pharmaceuticals, Inc.",
+    "Removed_Ticker": "KMAG",
+    "Removed_Company": "Komag, Incorporated"
+  },
+  {
+    "Date": "1998-01-07",
+    "Year": 1998,
+    "Added_Ticker": "ERICY",
+    "Added_Company": "LM Ericsson Telephone Co ADR",
+    "Removed_Ticker": "INTU",
+    "Removed_Company": "Intuit Inc."
+  },
+  {
+    "Date": "1998-01-07",
+    "Year": 1998,
+    "Added_Ticker": "IMNX",
+    "Added_Company": "Immunex Corporation",
+    "Removed_Ticker": "PAGE",
+    "Removed_Company": "Paging Network, Inc."
+  },
+  {
+    "Date": "1998-01-07",
+    "Year": 1998,
+    "Added_Ticker": "JCOR",
+    "Added_Company": "Jacor Communications Inc.",
+    "Removed_Ticker": "IDXX",
+    "Removed_Company": "IDEXX Laboratories, Inc."
+  },
+  {
+    "Date": "1998-01-07",
+    "Year": 1998,
+    "Added_Ticker": "RTRSY",
+    "Added_Company": "Reuters Holdings Plc ADR",
+    "Removed_Ticker": "RPOW",
+    "Removed_Company": "RPM, Inc."
+  },
+  {
+    "Date": "1998-01-07",
+    "Year": 1998,
+    "Added_Ticker": "TECD",
+    "Added_Company": "Tech Data Corporation",
+    "Removed_Ticker": "CRUS",
+    "Removed_Company": "Cirrus Logic, Inc."
+  },
+  {
+    "Date": "1998-02-11",
+    "Year": 1998,
+    "Added_Ticker": "RXSD",
+    "Added_Company": "Rexall Sundown, Inc.",
+    "Removed_Ticker": "AGREA",
+    "Removed_Company": "American Greetings Corporation"
+  },
+  {
+    "Date": "1998-08-27",
+    "Year": 1998,
+    "Added_Ticker": "LVLT",
+    "Added_Company": "Level 3 Communications, Inc.",
+    "Removed_Ticker": "VKNG",
+    "Removed_Company": "Viking Office Products, Inc."
+  },
+  {
+    "Date": "1998-08-28",
+    "Year": 1998,
+    "Added_Ticker": "QWST",
+    "Added_Company": "Qwest Communications International, Inc.",
+    "Removed_Ticker": "DIGI",
+    "Removed_Company": "DSC Communications Corporation"
+  },
+  {
+    "Date": "1998-09-15",
+    "Year": 1998,
+    "Added_Ticker": "USAI",
+    "Added_Company": "USA Networks, Inc.",
+    "Removed_Ticker": "GART",
+    "Removed_Company": "Gartner Group, Inc."
+  },
+  {
+    "Date": "1998-09-16",
+    "Year": 1998,
+    "Added_Ticker": "YHOO",
+    "Added_Company": "Yahoo! Inc.",
+    "Removed_Ticker": "MCIC",
+    "Removed_Company": "MCI Communications Corporation"
+  },
+  {
+    "Date": "1998-12-21",
+    "Year": 1998,
+    "Added_Ticker": "AMZN",
+    "Added_Company": "Amazon.com, Inc.",
+    "Removed_Ticker": "GNCI",
+    "Removed_Company": "General Nutrition Companies, Inc."
+  },
+  {
+    "Date": "1998-12-21",
+    "Year": 1998,
+    "Added_Ticker": "COMR",
+    "Added_Company": "Comair Holdings, Inc.",
+    "Removed_Ticker": "OFIS",
+    "Removed_Company": "U.S. Office Products Company"
+  },
+  {
+    "Date": "1998-12-21",
+    "Year": 1998,
+    "Added_Ticker": "DLTR",
+    "Added_Company": "Dollar Tree Stores, Inc.",
+    "Removed_Ticker": "SYBS",
+    "Removed_Company": "Sybase, Inc."
+  },
+  {
+    "Date": "1998-12-21",
+    "Year": 1998,
+    "Added_Ticker": "INTU",
+    "Added_Company": "Intuit Inc.",
+    "Removed_Ticker": "ADTN",
+    "Removed_Company": "ADTRAN, Inc."
+  },
+  {
+    "Date": "1998-12-21",
+    "Year": 1998,
+    "Added_Ticker": "LNCR",
+    "Added_Company": "Lincare Holdings, Inc.",
+    "Removed_Ticker": "PHYC",
+    "Removed_Company": "PhyCor, Inc."
+  },
+  {
+    "Date": "1998-12-21",
+    "Year": 1998,
+    "Added_Ticker": "MCLD",
+    "Added_Company": "McLeodUSA Incorporated",
+    "Removed_Ticker": "DURA",
+    "Removed_Company": "Dura Pharmaceuticals, Inc."
+  },
+  {
+    "Date": "1998-12-21",
+    "Year": 1998,
+    "Added_Ticker": "NTLI",
+    "Added_Company": "NTL Incorporated",
+    "Removed_Ticker": "OXHP",
+    "Removed_Company": "Oxford Health Plans, Inc."
+  },
+  {
+    "Date": "1998-12-21",
+    "Year": 1998,
+    "Added_Ticker": "VRTS",
+    "Added_Company": "VERITAS Software Corporation",
+    "Removed_Ticker": "WCLX",
+    "Removed_Company": "Wisconsin Central Transportation"
+  },
+  {
+    "Date": "1998-12-21",
+    "Year": 1998,
+    "Added_Ticker": "VTSS",
+    "Added_Company": "Vitesse Semiconductor Corporation",
+    "Removed_Ticker": "PAIR",
+    "Removed_Company": "PairGain Technologies, Inc."
+  },
+  {
+    "Date": "1998-12-30",
+    "Year": 1998,
+    "Added_Ticker": "SANM",
+    "Added_Company": "Sanmina Corporation",
+    "Removed_Ticker": "AWIN",
+    "Removed_Company": "Allied Waste Industries, Inc."
+  },
+  {
+    "Date": "1997-05-22",
+    "Year": 1997,
+    "Added_Ticker": "NSCP",
+    "Added_Company": "Netscape Communications Corporation",
+    "Removed_Ticker": "GATE",
+    "Removed_Company": "Gateway 2000, Inc."
+  },
+  {
+    "Date": "1997-06-04",
+    "Year": 1997,
+    "Added_Ticker": "MCHP",
+    "Added_Company": "Microchip Technology, Incorporated",
+    "Removed_Ticker": "SNDT",
+    "Removed_Company": "SunGard Data Systems, Inc."
+  },
+  {
+    "Date": "1997-06-12",
+    "Year": 1997,
+    "Added_Ticker": "MLHR",
+    "Added_Company": "Herman Miller Incorporated",
+    "Removed_Ticker": "USRX",
+    "Removed_Company": "U.S. Robotics Corporation"
+  },
+  {
+    "Date": "1997-06-12",
+    "Year": 1997,
+    "Added_Ticker": "ROST",
+    "Added_Company": "Ross Stores, Inc.",
+    "Removed_Ticker": "RWIN",
+    "Removed_Company": "Republic Industries, Inc."
+  },
+  {
+    "Date": "1997-07-01",
+    "Year": 1997,
+    "Added_Ticker": "OFIS",
+    "Added_Company": "U.S. Office Products Company",
+    "Removed_Ticker": "CSCC",
+    "Removed_Company": "Cascade Communications Corp."
+  },
+  {
+    "Date": "1997-07-24",
+    "Year": 1997,
+    "Added_Ticker": "JJSC",
+    "Added_Company": "Jefferson Smurfit Corporation",
+    "Removed_Ticker": "STRY",
+    "Removed_Company": "Stryker Corporation"
+  },
+  {
+    "Date": "1997-08-13",
+    "Year": 1997,
+    "Added_Ticker": "STEI",
+    "Added_Company": "Stewart Enterprises, Inc. Cls A",
+    "Removed_Ticker": "FORT",
+    "Removed_Company": "Fort Howard Corporation"
+  },
+  {
+    "Date": "1997-10-15",
+    "Year": 1997,
+    "Added_Ticker": "SPOT",
+    "Added_Company": "PanAmSat Corporation",
+    "Removed_Ticker": "TYSNA",
+    "Removed_Company": "Tyson Foods, Inc. Class A"
+  },
+  {
+    "Date": "1996-02-29",
+    "Year": 1996,
+    "Added_Ticker": "OXHP",
+    "Added_Company": "Oxford Health Plans, Inc.",
+    "Removed_Ticker": "BNET",
+    "Removed_Company": "Bay Networks, Inc."
+  },
+  {
+    "Date": "1996-07-10",
+    "Year": 1996,
+    "Added_Ticker": "ASND",
+    "Added_Company": "Ascend Communications, Inc.",
+    "Removed_Ticker": "STRM",
+    "Removed_Company": "StrataCom, Inc."
+  },
+  {
+    "Date": "1996-07-17",
+    "Year": 1996,
+    "Added_Ticker": "CSCC",
+    "Added_Company": "Cascade Communications Corp.",
+    "Removed_Ticker": "USHC",
+    "Removed_Company": "U.S. Healthcare, Inc."
+  },
+  {
+    "Date": "1996-08-02",
+    "Year": 1996,
+    "Added_Ticker": "RWIN",
+    "Added_Company": "Republic Industries, Inc.",
+    "Removed_Ticker": "AMER",
+    "Removed_Company": "America Online, Inc."
+  },
+  {
+    "Date": "1996-09-30",
+    "Year": 1996,
+    "Added_Ticker": "FORE",
+    "Added_Company": "FORE Systems, Inc.",
+    "Removed_Ticker": "AESC",
+    "Removed_Company": "AES Corporation (The)"
+  },
+  {
+    "Date": "1996-11-25",
+    "Year": 1996,
+    "Added_Ticker": "SBUX",
+    "Added_Company": "Starbucks Corporation",
+    "Removed_Ticker": "STJM",
+    "Removed_Company": "St. Jude Medical, Inc."
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "ADTN",
+    "Added_Company": "ADTRAN, Inc.",
+    "Removed_Ticker": "AKLM",
+    "Removed_Company": "Acclaim Entertainment, Inc."
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "BBBY",
+    "Added_Company": "Bed Bath & Beyond Inc.",
+    "Removed_Ticker": "ASAI",
+    "Removed_Company": "Atlantic Southeast Airlines, Inc."
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "CEXP",
+    "Added_Company": "Corporate Express, Inc.",
+    "Removed_Ticker": "BOBE",
+    "Removed_Company": "Bob Evans Farms, Inc."
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "CEFT",
+    "Added_Company": "Concord EFS, Inc.",
+    "Removed_Ticker": "GIDL",
+    "Removed_Company": "Giddings & Lewis, Inc."
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "EFII",
+    "Added_Company": "Electronics for Imaging, Inc.",
+    "Removed_Ticker": "JBHT",
+    "Removed_Company": "J.B. Hunt Transport Services, Inc."
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "FISV",
+    "Added_Company": "Fiserv, Inc.",
+    "Removed_Ticker": "KELYA",
+    "Removed_Company": "Kelly Services, Inc."
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "FORT",
+    "Added_Company": "Fort Howard Corporation",
+    "Removed_Ticker": "LRCX",
+    "Removed_Company": "Lam Research Corporation"
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "KMAG",
+    "Added_Company": "Komag, Incorporated",
+    "Removed_Ticker": "MLHR",
+    "Removed_Company": "Herman Miller, Inc."
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "MCAF",
+    "Added_Company": "McAfee Associates, Inc.",
+    "Removed_Ticker": "MTEL",
+    "Removed_Company": "Mobile Telecommunication Technologies Corp."
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "PAIR",
+    "Added_Company": "PairGain Technologies, Inc.",
+    "Removed_Ticker": "PRGO",
+    "Removed_Company": "Perrigo Company"
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "PHYC",
+    "Added_Company": "PhyCor, Inc.",
+    "Removed_Ticker": "RDRT",
+    "Removed_Company": "Read-Rite Corporation"
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "QTRN",
+    "Added_Company": "Quintiles Transnational Corp.",
+    "Removed_Ticker": "SHLM",
+    "Removed_Company": "A. Schulman, Inc."
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "SNDT",
+    "Added_Company": "SunGard Data Systems, Inc.",
+    "Removed_Ticker": "SSSS",
+    "Removed_Company": "Stewart & Stevenson Services, Inc."
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "SNPS",
+    "Added_Company": "Synopsys, Inc.",
+    "Removed_Ticker": "VCELA",
+    "Removed_Company": "Vanguard Cellular Systems, Inc."
+  },
+  {
+    "Date": "1996-12-23",
+    "Year": 1996,
+    "Added_Ticker": "WCLX",
+    "Added_Company": "Wisconsin Central Transportation",
+    "Removed_Ticker": "WMTT",
+    "Removed_Company": "Willamette Industries, Inc."
+  },
+  {
+    "Date": "1996-12-31",
+    "Year": 1996,
+    "Added_Ticker": "FAST",
+    "Added_Company": "Fastenal Company",
+    "Removed_Ticker": "MFST",
+    "Removed_Company": "MFS Communications Company, Inc."
+  },
+  {
+    "Date": "1995-01-27",
+    "Year": 1995,
+    "Added_Ticker": "RPOW",
+    "Added_Company": "RPM, Inc.",
+    "Removed_Ticker": "DOLR",
+    "Removed_Company": "Dollar General Corporation"
+  },
+  {
+    "Date": "1995-01-27",
+    "Year": 1995,
+    "Added_Ticker": "STRM",
+    "Added_Company": "StrataCom, Inc.",
+    "Removed_Ticker": "MGMA",
+    "Removed_Company": "Magma Power Company"
+  },
+  {
+    "Date": "1995-02-13",
+    "Year": 1995,
+    "Added_Ticker": "SHLM",
+    "Added_Company": "A. Schulman, Inc.",
+    "Removed_Ticker": "QVCN",
+    "Removed_Company": "QVC, Inc."
+  },
+  {
+    "Date": "1995-02-27",
+    "Year": 1995,
+    "Added_Ticker": "KLAC",
+    "Added_Company": "KLA Instruments Corporation",
+    "Removed_Ticker": "SMLS",
+    "Removed_Company": "SciMed Life Systems, Inc"
+  },
+  {
+    "Date": "1995-03-06",
+    "Year": 1995,
+    "Added_Ticker": "HBOC",
+    "Added_Company": "HBO & Company",
+    "Removed_Ticker": "SONO",
+    "Removed_Company": "Sonoco Products Company"
+  },
+  {
+    "Date": "1995-07-05",
+    "Year": 1995,
+    "Added_Ticker": "MFST",
+    "Added_Company": "MFS Communications Company, Inc.",
+    "Removed_Ticker": "LOTC",
+    "Removed_Company": "Lotus Development Corporation"
+  },
+  {
+    "Date": "1995-07-19",
+    "Year": 1995,
+    "Added_Ticker": "ALTR",
+    "Added_Company": "Altera Corporation",
+    "Removed_Ticker": "LGNT",
+    "Removed_Company": "LEGENT Corporation"
+  },
+  {
+    "Date": "1995-08-18",
+    "Year": 1995,
+    "Added_Ticker": "NWAC",
+    "Added_Company": "Northwest Airlines Corporation",
+    "Removed_Ticker": "BRNO",
+    "Removed_Company": "Bruno's Inc."
+  },
+  {
+    "Date": "1995-09-27",
+    "Year": 1995,
+    "Added_Ticker": "USRX",
+    "Added_Company": "U.S. Robotics Corporation",
+    "Removed_Ticker": "PTCM",
+    "Removed_Company": "Pacific Telecom, Inc."
+  },
+  {
+    "Date": "1995-10-03",
+    "Year": 1995,
+    "Added_Ticker": "GEMS",
+    "Added_Company": "Glenayre Technologies, Inc.",
+    "Removed_Ticker": "LINB",
+    "Removed_Company": "LIN Broadcasting Corporation"
+  },
+  {
+    "Date": "1995-11-06",
+    "Year": 1995,
+    "Added_Ticker": "AMER",
+    "Added_Company": "America Online, Inc.",
+    "Removed_Ticker": "PHYB",
+    "Removed_Company": "Pioneer Hi-Bred International, Inc."
+  },
+  {
+    "Date": "1995-11-27",
+    "Year": 1995,
+    "Added_Ticker": "GATE",
+    "Added_Company": "Gateway 2000, Inc.",
+    "Removed_Ticker": "ROAD",
+    "Removed_Company": "Roadway Services, Inc."
+  },
+  {
+    "Date": "1995-11-27",
+    "Year": 1995,
+    "Added_Ticker": "INTU",
+    "Added_Company": "Intuit Inc.",
+    "Removed_Ticker": "MMEDC",
+    "Removed_Company": "MultiMedia, Inc."
+  },
+  {
+    "Date": "1995-12-18",
+    "Year": 1995,
+    "Added_Ticker": "BOST",
+    "Added_Company": "Boston Chicken, Inc.",
+    "Removed_Ticker": "ACCOB",
+    "Removed_Company": "Adolph Coors Company"
+  },
+  {
+    "Date": "1995-12-18",
+    "Year": 1995,
+    "Added_Ticker": "GART",
+    "Added_Company": "Gartner Group, Inc. Class A",
+    "Removed_Ticker": "ALEX",
+    "Removed_Company": "Alexander & Baldwin, Inc."
+  },
+  {
+    "Date": "1995-12-18",
+    "Year": 1995,
+    "Added_Ticker": "GNCI",
+    "Added_Company": "General Nutrition Companies, Inc.",
+    "Removed_Ticker": "ASTA",
+    "Removed_Company": "AST Research, Inc."
+  },
+  {
+    "Date": "1995-12-18",
+    "Year": 1995,
+    "Added_Ticker": "IDXX",
+    "Added_Company": "IDEXX Laboratories, Inc.",
+    "Removed_Ticker": "CHRS",
+    "Removed_Company": "Charming Shoppes, Inc."
+  },
+  {
+    "Date": "1995-12-18",
+    "Year": 1995,
+    "Added_Ticker": "MUEI",
+    "Added_Company": "Micron Electronics, Inc.",
+    "Removed_Ticker": "HONI",
+    "Removed_Company": "Hon Industries Inc."
+  },
+  {
+    "Date": "1995-12-18",
+    "Year": 1995,
+    "Added_Ticker": "MXIM",
+    "Added_Company": "Maxim Integrated Products, Inc.",
+    "Removed_Ticker": "INEL",
+    "Removed_Company": "Intelligent Electronics, Inc."
+  },
+  {
+    "Date": "1995-12-18",
+    "Year": 1995,
+    "Added_Ticker": "PETM",
+    "Added_Company": "PETsMART, Inc.",
+    "Removed_Ticker": "NDSN",
+    "Removed_Company": "Nordson Corporation"
+  },
+  {
+    "Date": "1995-12-18",
+    "Year": 1995,
+    "Added_Ticker": "PSFT",
+    "Added_Company": "PeopleSoft, Inc.",
+    "Removed_Ticker": "TECUA",
+    "Removed_Company": "Tecumseh Products Company Class A"
+  },
+  {
+    "Date": "1995-12-18",
+    "Year": 1995,
+    "Added_Ticker": "RDRT",
+    "Added_Company": "Read-Rite Corporation",
+    "Removed_Ticker": "YELL",
+    "Removed_Company": "Yellow Corporation"
+  }
+]

@@ -79,7 +79,7 @@ try:
     print(f"Plot saved to: {output_plot}")
 
     # Copy to artifact folder if it exists
-    artifact_dir = '/Users/sjamthe/.gemini/antigravity-ide/brain/c97a0c5d-2fd6-4ac1-ab91-853c8103ac79'
+    artifact_dir = '/Users/sjamthe/.gemini/antigravity-ide/brain/278cb75b-212b-4bbd-be70-50694e134c47'
     if os.path.exists(artifact_dir):
         import shutil
         shutil.copy(output_plot, os.path.join(artifact_dir, 'candidates_vs_nasdaq100_total_return.png'))

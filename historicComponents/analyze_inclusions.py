@@ -96,14 +96,14 @@ print(f"Found {len(sp500_additions)} S&P 500 additions in history.")
 
 # 3. Extract NASDAQ-100 addition events
 print("\nExtracting NASDAQ-100 additions...")
-nasdaq_url = "https://en.wikipedia.org/wiki/Nasdaq-100"
+nasdaq_url = "https://en.wikipedia.org/wiki/List_of_NASDAQ-100_companies"
 req = urllib.request.Request(nasdaq_url, headers={'User-Agent': 'Mozilla/5.0'})
 ndx_additions = []
 try:
     with urllib.request.urlopen(req) as response:
         html_ndx = response.read()
     tables = pd.read_html(html_ndx)
-    df_changes = tables[6]
+    df_changes = tables[1]
     if isinstance(df_changes.columns, pd.MultiIndex):
         df_changes.columns = ['_'.join(col).strip() if isinstance(col, tuple) else col for col in df_changes.columns]
     date_col = next((col for col in df_changes.columns if 'date' in col.lower()), None)
@@ -192,7 +192,7 @@ def calculate_event_all_windows(ticker, addition_date, index_name, benchmark_pri
             return None
             
         # Clean price series
-        stock_prices = stock_prices.mask(stock_prices > 10000, np.nan).ffill().bfill()
+        stock_prices = stock_prices.mask(stock_prices > 10000, np.nan).ffill().bfill(limit=5)
         
         event_dict = {
             'Index': index_name,
@@ -345,7 +345,7 @@ try:
     print(f"\nDecay plot saved to: {output_plot}")
     
     # Copy to artifact folder if it exists
-    artifact_dir = '/Users/sjamthe/.gemini/antigravity-ide/brain/c97a0c5d-2fd6-4ac1-ab91-853c8103ac79'
+    artifact_dir = '/Users/sjamthe/.gemini/antigravity-ide/brain/278cb75b-212b-4bbd-be70-50694e134c47'
     if os.path.exists(artifact_dir):
         import shutil
         shutil.copy(output_plot, os.path.join(artifact_dir, 'index_inclusion_comparison.png'))

@@ -85,7 +85,7 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
     
     # Clean price data: if price > 10000, set to NaN and forward-fill (handles delisted outliers)
     df_prices = df_prices.mask(df_prices > 10000, np.nan)
-    df_prices = df_prices.ffill().bfill()
+    df_prices = df_prices.ffill().bfill(limit=5)
     
     # Daily returns for all stocks
     df_stock_returns = df_prices.pct_change(fill_method=None)
@@ -285,7 +285,7 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
         print(f"Plot saved to: {output_plot_path}")
         
         # Copy to artifact folder if it exists
-        artifact_dir = '/Users/sjamthe/.gemini/antigravity-ide/brain/c97a0c5d-2fd6-4ac1-ab91-853c8103ac79'
+        artifact_dir = '/Users/sjamthe/.gemini/antigravity-ide/brain/278cb75b-212b-4bbd-be70-50694e134c47'
         if os.path.exists(artifact_dir):
             import shutil
             shutil.copy(output_plot_path, os.path.join(artifact_dir, f"{portfolio_name}_returns_chart.png"))

@@ -1,0 +1,3 @@
+NASDAQ-100
+
+Daily index value from 1986-01-02 https://fred.stlouisfed.org/data/NASDAQ100
