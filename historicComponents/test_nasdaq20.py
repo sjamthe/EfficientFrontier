@@ -22,6 +22,7 @@ for idx, row in df_meta.iterrows():
 # Determine constituents for each quarter (top 20 by market cap at start of quarter)
 print("Extracting top 20 NASDAQ-100 constituents for each quarter...")
 ndx20_results = []
+prev_candidates = []
 
 for idx, row in df_ndx.iterrows():
     q_name = row['Quarter']
@@ -45,10 +46,10 @@ for idx, row in df_ndx.iterrows():
                 else:
                     continue
                     
-                # Find price on or closest after start date
-                prices = prices.loc[q_start:]
-                if not prices.empty:
-                    start_price = prices.iloc[0]
+                # Find price on or closest after start date (must be within 30 days of the quarter start)
+                valid_prices = prices.loc[q_start : q_start + pd.Timedelta(days=30)]
+                if not valid_prices.empty:
+                    start_price = valid_prices.iloc[0]
                     shares = metadata.get(ticker, 1.0)
                     if pd.isna(shares) or shares <= 0:
                         shares = 1.0
@@ -57,9 +58,39 @@ for idx, row in df_ndx.iterrows():
             except Exception:
                 pass
                 
-    # Sort by market cap descending and select top 20
+    # Sort by market cap descending and calculate ranks
     mcap_list = sorted(mcap_list, key=lambda x: x[1], reverse=True)
-    top20 = [x[0] for x in mcap_list[:20]]
+    ticker_ranks = {x[0]: r + 1 for r, x in enumerate(mcap_list)}
+    ticker_mcaps = {x[0]: x[1] for x in mcap_list}
+    
+    # Determine the top 20 candidates using hysteresis (Enter <= 15, Stay <= 25)
+    if not prev_candidates:
+        # First quarter: select top 20 by market cap
+        top20 = [x[0] for x in mcap_list[:20]]
+    else:
+        # Subsequent quarters: retain existing constituents if they are Rank 25 or better
+        retained = []
+        for ticker in prev_candidates:
+            if ticker in ticker_ranks and ticker_ranks[ticker] <= 25:
+                retained.append(ticker)
+        
+        # Fill remaining slots with new candidates only if they rank in the Top 15
+        if len(retained) < 20:
+            slots_needed = 20 - len(retained)
+            new_candidates = []
+            for ticker, mcap in mcap_list:
+                if ticker not in retained:
+                    # New security must rank in the Top 15 to be included
+                    if ticker_ranks[ticker] <= 15:
+                        new_candidates.append(ticker)
+            retained.extend(new_candidates[:slots_needed])
+        elif len(retained) > 20:
+            # Keep top 20 of retained by current market cap
+            retained = sorted(retained, key=lambda x: ticker_mcaps[x], reverse=True)[:20]
+            
+        top20 = retained
+        
+    prev_candidates = list(top20)
     
     ndx20_results.append({
         'Quarter': q_name,

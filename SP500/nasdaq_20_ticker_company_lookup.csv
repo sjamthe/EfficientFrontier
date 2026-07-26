@@ -1,0 +1,60 @@
+Ticker,Company_Name,Active_Period,Historical_Notes
+AAPL,Apple Inc.,1997-2026,"Known as Apple Computer, Inc. from 1997 to Jan 2007, then renamed Apple Inc."
+ADBE,Adobe Inc.,1997-2025,"Known as Adobe Systems Incorporated until Oct 2018, then renamed Adobe Inc."
+ADP,"Automatic Data Processing, Inc.",2009-2014,"Automatic Data Processing, Inc."
+ADTN,"ADTRAN, Inc.",1997-1998,"Known as ADTRAN, Inc. during active period; holding company ADTRAN Holdings, Inc. formed in 2022."
+AMAT,"Applied Materials, Inc.",1997-2010,"Applied Materials, Inc."
+AMD,"Advanced Micro Devices, Inc.",2022-2026,"Advanced Micro Devices, Inc."
+AMGN,Amgen Inc.,1997-2021,Amgen Inc.
+AMZN,"Amazon.com, Inc.",1999-2026,"Amazon.com, Inc."
+ASML,ASML Holding N.V.,2021-2026,ASML Holding N.V.
+AVGO,Broadcom Inc.,2016-2026,"Formerly Avago Technologies Limited; acquired Broadcom Corp in 2016 and renamed Broadcom Limited, then Broadcom Inc. in 2018."
+AZN,AstraZeneca PLC,2022-2026,AstraZeneca PLC
+BIDU,"Baidu, Inc.",2010-2017,"Baidu, Inc."
+BIIB,Biogen Inc.,2001-2016,Merged with IDEC Pharmaceuticals in 2003 to become Biogen Idec Inc.; reverted name to Biogen Inc. in 2015.
+CIEN,Ciena Corporation,2000-2002,Ciena Corporation
+CMCSA,Comcast Corporation,2002-2024,Comcast Corporation
+COST,Costco Wholesale Corporation,1997-2026,"Known as Costco Companies, Inc. until Aug 1999, then renamed Costco Wholesale Corporation."
+CSCO,"Cisco Systems, Inc.",1997-2026,"Cisco Systems, Inc."
+CTAS,Cintas Corporation,1997-2000,Cintas Corporation
+ERIC,Telefonaktiebolaget LM Ericsson,2006-2008,LM Ericsson Telephone Company (Ericsson ADR).
+FSLR,"First Solar, Inc.",2009-2011,"First Solar, Inc."
+GILD,"Gilead Sciences, Inc.",2003-2020,"Gilead Sciences, Inc."
+GOOG,Alphabet Inc.,2005-2026,Google Inc. until Oct 2015 restructuring under parent Alphabet Inc. (Class C capital stock).
+GOOGL,Alphabet Inc.,2007-2026,Google Inc. until Oct 2015 restructuring under parent Alphabet Inc. (Class A voting stock).
+INFY,Infosys Limited,2008-2012,"Known as Infosys Technologies Limited until June 2011, then renamed Infosys Limited."
+INTC,Intel Corporation,1997-2024,Intel Corporation
+INTU,Intuit Inc.,2002-2004,Intuit Inc.
+KHC,The Kraft Heinz Company,2015-2019,Formed by merger of Kraft Foods Group and H.J. Heinz Company in July 2015.
+KLAC,KLA Corporation,1997-2004,"Known as KLA-Tencor Corporation from 1997 merger until Jan 2019, when renamed KLA Corporation."
+MCHP,Microchip Technology Incorporated,2002-2006,Microchip Technology Incorporated
+MDLZ,"Mondelēz International, Inc.",2007-2017,"Formerly Kraft Foods Inc. (KFT); renamed Mondelēz International, Inc. in Oct 2012 upon grocery business spinoff."
+META,"Meta Platforms, Inc.",2012-2026,"Known as Facebook, Inc. (ticker FB) from 2012 until Oct 2021; renamed Meta Platforms, Inc. (ticker META in June 2022)."
+MRVL,"Marvell Technology, Inc.",2004-2011,"Known as Marvell Technology Group Ltd. during active period; reorganized as Marvell Technology, Inc. in 2021."
+MSFT,Microsoft Corporation,1997-2025,Microsoft Corporation
+MU,"Micron Technology, Inc.",2026-2026,"Micron Technology, Inc."
+NFLX,"Netflix, Inc.",2018-2026,"Netflix, Inc."
+NTAP,"NetApp, Inc.",2000-2001,"Known as Network Appliance, Inc. during active period (2000-2001); renamed NetApp, Inc. in March 2008."
+NVDA,NVIDIA Corporation,2001-2026,NVIDIA Corporation
+NXTL,"Nextel Communications, Inc.",1997-2005,"Nextel Communications, Inc. during active period; merged with Sprint Corp. in 2005 to form Sprint Nextel."
+ORCL,Oracle Corporation,1997-2013,Oracle Corporation
+PAYX,"Paychex, Incorporated",1997-2010,"Paychex, Incorporated"
+PCAR,PACCAR Inc,1997-2000,PACCAR Inc
+PDD,PDD Holdings Inc.,2021-2021,Known as Pinduoduo Inc. during active period (2021); renamed PDD Holdings Inc. in Feb 2023.
+PEP,"PepsiCo, Inc.",2018-2026,"PepsiCo, Inc."
+PLTR,Palantir Technologies Inc.,2025-2026,Palantir Technologies Inc.
+PYPL,"PayPal Holdings, Inc.",2020-2022,"PayPal Holdings, Inc."
+QCOM,QUALCOMM Incorporated,1997-2017,QUALCOMM Incorporated
+SANM,Sanmina Corporation,2001-2002,Known as Sanmina Corporation when bought; merged with SCI Systems in Dec 2001 to become Sanmina-SCI Corp (later reverted to Sanmina Corp).
+SBUX,Starbucks Corporation,1997-2018,Starbucks Corporation
+SNPS,"Synopsys, Inc.",1997-2000,"Synopsys, Inc."
+SUNW,"Sun Microsystems, Inc.",1997-2002,"Sun Microsystems, Inc. during active period (1997-2002); acquired by Oracle in 2010. Ticker SUNW later reused by Sunworks, Inc. in 2014."
+TEVA,Teva Pharmaceutical Industries Limited,2003-2012,Teva Pharmaceutical Industries Limited
+TMUS,"T-Mobile US, Inc.",2022-2026,"T-Mobile US, Inc."
+TSLA,"Tesla, Inc.",2013-2026,"Known as Tesla Motors, Inc. from 2013 to Feb 2017, then renamed Tesla, Inc."
+TXN,Texas Instruments Incorporated,2018-2025,Texas Instruments Incorporated
+VOD,Vodafone Group Plc,2010-2018,Vodafone Group Public Limited Company
+VRSN,"VeriSign, Inc.",2000-2001,"VeriSign, Inc."
+WCOEQ,"WorldCom, Inc.",1997-2001,"WorldCom, Inc. / MCI WorldCom, Inc. during active period (1997-2001); append EQ ticker extension added during 2002 bankruptcy."
+WMT,Walmart Inc.,2026-2026,"Known as Wal-Mart Stores, Inc. until Feb 2018, then renamed Walmart Inc."
+YHOO,Yahoo! Inc.,1998-2011,Yahoo! Inc. during active period (1998-2011); operating business acquired by Verizon in 2017.

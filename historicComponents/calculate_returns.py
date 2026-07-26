@@ -103,6 +103,10 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
     previous_weights = pd.Series(dtype=float)
     current_portfolio_value = initial_value
     
+    # FIFO Tax lot tracking initialization
+    portfolio_lots = {} # ticker -> list of dicts: {'buy_date': Timestamp, 'buy_price': float, 'shares': float}
+    tax_realizations = []
+    
     # Run backtest quarter by quarter
     for idx, row in df_quarters.iterrows():
         q_name = row['Quarter']
@@ -159,9 +163,13 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
             
         current_weights = pd.Series(weights)
 
-        # Calculate trades for the current quarter rebalancing
+        # Calculate trades for the current quarter rebalancing and track FIFO tax lots
         all_tickers = sorted(list(set(previous_weights.index) | set(current_weights.index)))
-        for ticker in all_tickers:
+        
+        # Sort tickers so that SELLs (negative trade value) are processed first to free up shares
+        tickers_sorted = sorted(all_tickers, key=lambda t: current_weights.get(t, 0.0) - previous_weights.get(t, 0.0))
+        
+        for ticker in tickers_sorted:
             prev_w = previous_weights.get(ticker, 0.0)
             new_w = current_weights.get(ticker, 0.0)
             weight_change = new_w - prev_w
@@ -174,6 +182,8 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
                 else:
                     trade_type = 'REBALANCE'
                     
+                trade_val = weight_change * current_portfolio_value
+                
                 trades_list.append({
                     'Quarter': q_name,
                     'Date': first_day.strftime('%Y-%m-%d'),
@@ -183,8 +193,76 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
                     'New_Weight_Pct': new_w * 100.0,
                     'Weight_Change_Pct': weight_change * 100.0,
                     'Portfolio_Value_USD': current_portfolio_value,
-                    'Trade_Value_USD': weight_change * current_portfolio_value
+                    'Trade_Value_USD': trade_val
                 })
+                
+                # FIFO Tax Lot Tracking
+                price = active_prices.get(ticker, np.nan)
+                if pd.isna(price) or price <= 0:
+                    price = df_prices[ticker].dropna().loc[:first_day].iloc[-1] if (ticker in df_prices.columns and not df_prices[ticker].dropna().loc[:first_day].empty) else 1.0
+                    
+                if trade_val > 0.0:
+                    # BUY
+                    shares = trade_val / price
+                    if ticker not in portfolio_lots:
+                        portfolio_lots[ticker] = []
+                    portfolio_lots[ticker].append({
+                        'buy_date': first_day,
+                        'buy_price': price,
+                        'shares': shares
+                    })
+                else:
+                    # SELL (Trade Value < 0)
+                    existing_lots = portfolio_lots.get(ticker, [])
+                    if existing_lots:
+                        # If completely liquidating (New Weight == 0), sell all remaining shares in lots
+                        if new_w <= 1e-6:
+                            shares_to_sell = sum(lot['shares'] for lot in existing_lots)
+                        else:
+                            shares_to_sell = -trade_val / price
+                            total_lot_shares = sum(lot['shares'] for lot in existing_lots)
+                            if total_lot_shares < shares_to_sell - 1e-4:
+                                shares_to_sell = total_lot_shares
+                                
+                        while shares_to_sell > 1e-4 and existing_lots:
+                            oldest_lot = existing_lots[0]
+                            if oldest_lot['shares'] <= shares_to_sell:
+                                holding_days = (first_day - oldest_lot['buy_date']).days
+                                gain_loss = (price - oldest_lot['buy_price']) * oldest_lot['shares']
+                                tax_realizations.append({
+                                    'Quarter': q_name,
+                                    'Sell_Date': first_day.strftime('%Y-%m-%d'),
+                                    'Ticker': ticker,
+                                    'Shares': oldest_lot['shares'],
+                                    'Buy_Date': oldest_lot['buy_date'].strftime('%Y-%m-%d'),
+                                    'Buy_Price_USD': oldest_lot['buy_price'],
+                                    'Sell_Price_USD': price,
+                                    'Holding_Days': holding_days,
+                                    'Tax_Term': 'Long-Term' if holding_days > 365 else 'Short-Term',
+                                    'Gain_Loss_USD': gain_loss,
+                                    'Gain_Loss_Pct': (price - oldest_lot['buy_price']) / oldest_lot['buy_price'] * 100.0 if oldest_lot['buy_price'] > 0 else 0.0
+                                })
+                                shares_to_sell -= oldest_lot['shares']
+                                existing_lots.pop(0)
+                            else:
+                                holding_days = (first_day - oldest_lot['buy_date']).days
+                                gain_loss = (price - oldest_lot['buy_price']) * shares_to_sell
+                                tax_realizations.append({
+                                    'Quarter': q_name,
+                                    'Sell_Date': first_day.strftime('%Y-%m-%d'),
+                                    'Ticker': ticker,
+                                    'Shares': shares_to_sell,
+                                    'Buy_Date': oldest_lot['buy_date'].strftime('%Y-%m-%d'),
+                                    'Buy_Price_USD': oldest_lot['buy_price'],
+                                    'Sell_Price_USD': price,
+                                    'Holding_Days': holding_days,
+                                    'Tax_Term': 'Long-Term' if holding_days > 365 else 'Short-Term',
+                                    'Gain_Loss_USD': gain_loss,
+                                    'Gain_Loss_Pct': (price - oldest_lot['buy_price']) / oldest_lot['buy_price'] * 100.0 if oldest_lot['buy_price'] > 0 else 0.0
+                                })
+                                oldest_lot['shares'] -= shares_to_sell
+                                shares_to_sell = 0
+                        portfolio_lots[ticker] = existing_lots
 
         for t in q_days:
             # Check if we have stock returns for this day
@@ -215,6 +293,13 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
         output_trades_path = os.path.join(data_dir, f"{portfolio_name}_trades.csv")
         df_trades.to_csv(output_trades_path, index=False)
         print(f"Saved rebalancing trades to: {output_trades_path}")
+
+    # Save tax realizations CSV if we have recorded realization events
+    if tax_realizations:
+        df_tax = pd.DataFrame(tax_realizations)
+        output_tax_path = os.path.join(data_dir, f"{portfolio_name}_tax_realizations.csv")
+        df_tax.to_csv(output_tax_path, index=False)
+        print(f"Saved tax realizations (FIFO) to: {output_tax_path}")
 
     # Clean returns series
     portfolio_daily_returns = portfolio_daily_returns.dropna()
