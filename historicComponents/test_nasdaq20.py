@@ -19,6 +19,9 @@ metadata = {}
 for idx, row in df_meta.iterrows():
     metadata[row['Ticker']] = row['Shares_Outstanding']
 
+# Tickers to exclude from portfolio
+exclude_tickers = ['META', 'PLTR']
+
 # Determine constituents for each quarter (top 20 by market cap at start of quarter)
 print("Extracting top 20 NASDAQ-100 constituents for each quarter...")
 ndx20_results = []
@@ -34,6 +37,8 @@ for idx, row in df_ndx.iterrows():
     # Calculate market cap for each constituent at start of quarter
     mcap_list = []
     for ticker in q_constituents:
+        if ticker in exclude_tickers:
+            continue
         pkl_path = os.path.join(pkl_dir, f"{ticker}.pkl")
         if os.path.exists(pkl_path):
             try:
@@ -63,25 +68,31 @@ for idx, row in df_ndx.iterrows():
     ticker_ranks = {x[0]: r + 1 for r, x in enumerate(mcap_list)}
     ticker_mcaps = {x[0]: x[1] for x in mcap_list}
     
-    # Determine the top 20 candidates using hysteresis (Enter <= 15, Stay <= 25)
+    # Determine the top 20 candidates using hysteresis (Enter <= 20, Stay <= 30)
+    # Rebalance constituents only in Q1 and Q3
+    is_rebalance_q = q_name.endswith('Q1') or q_name.endswith('Q3')
+    
     if not prev_candidates:
         # First quarter: select top 20 by market cap
         top20 = [x[0] for x in mcap_list[:20]]
+    elif not is_rebalance_q:
+        # Keep previous candidates in Q2 and Q4 (no constituent swaps)
+        top20 = prev_candidates
     else:
-        # Subsequent quarters: retain existing constituents if they are Rank 25 or better
+        # Subsequent rebalance quarters: retain existing constituents if they are Rank 30 or better
         retained = []
         for ticker in prev_candidates:
-            if ticker in ticker_ranks and ticker_ranks[ticker] <= 25:
+            if ticker in ticker_ranks and ticker_ranks[ticker] <= 30:
                 retained.append(ticker)
         
-        # Fill remaining slots with new candidates only if they rank in the Top 15
+        # Fill remaining slots with new candidates only if they rank in the Top 20
         if len(retained) < 20:
             slots_needed = 20 - len(retained)
             new_candidates = []
             for ticker, mcap in mcap_list:
                 if ticker not in retained:
-                    # New security must rank in the Top 15 to be included
-                    if ticker_ranks[ticker] <= 15:
+                    # New security must rank in the Top 20 to be included
+                    if ticker_ranks[ticker] <= 20:
                         new_candidates.append(ticker)
             retained.extend(new_candidates[:slots_needed])
         elif len(retained) > 20:

@@ -14,6 +14,9 @@ metadata_csv = os.path.join(data_dir, 'ticker_metadata.csv')
 nasdaq_csv = os.path.join(data_dir, 'nasdaq_quarterly_history.csv')
 output_weights_csv = os.path.join(data_dir, 'nasdaq_20_current_weights.csv')
 
+# Tickers to exclude from the portfolio
+exclude_tickers = ['META', 'PLTR']
+
 def fetch_constituents_from_wikipedia():
     """Fetch current Nasdaq-100 constituents and company names from Wikipedia."""
     url = "https://en.wikipedia.org/wiki/Nasdaq-100"
@@ -117,6 +120,16 @@ def main():
         except Exception as e:
             print(f"Warning: Could not read {metadata_csv}: {e}")
 
+    # Load company name lookup if it exists
+    ticker_to_company = {}
+    lookup_csv = os.path.join(data_dir, 'nasdaq_20_ticker_company_lookup.csv')
+    if os.path.exists(lookup_csv):
+        try:
+            df_lookup = pd.read_csv(lookup_csv)
+            ticker_to_company = dict(zip(df_lookup['Ticker'], df_lookup['Company_Name']))
+        except Exception as e:
+            print(f"Warning: Could not read name lookup {lookup_csv}: {e}")
+
     # Check if query_date is covered by our historical nasdaq_20_quarterly.csv
     is_historical = False
     quarter_name = None
@@ -132,10 +145,11 @@ def main():
             matching_row = matching_rows.iloc[0]
             quarter_name = matching_row['Quarter']
             tickers = [t.strip() for t in str(matching_row['Candidates']).split(',') if t.strip()]
+            tickers = [t for t in tickers if t not in exclude_tickers]
             is_historical = True
             df_const = pd.DataFrame({
                 'Ticker': tickers,
-                'Company': tickers
+                'Company': [ticker_to_company.get(t, t) for t in tickers]
             })
             print(f"Found historical NASDAQ-20 constituents for {query_date_str} in quarter {quarter_name} ({len(tickers)} tickers).")
 
@@ -152,7 +166,13 @@ def main():
                 return
                 
         ndx100_tickers = df_ndx100['Ticker'].tolist()
-        ticker_to_company = dict(zip(df_ndx100['Ticker'], df_ndx100['Company']))
+        ndx100_tickers = [t for t in ndx100_tickers if t not in exclude_tickers]
+        
+        # Merge: lookup first, fallback to wiki, then ticker
+        wiki_to_company = dict(zip(df_ndx100['Ticker'], df_ndx100['Company']))
+        for t in ndx100_tickers:
+            if t not in ticker_to_company:
+                ticker_to_company[t] = wiki_to_company.get(t, t)
         
         # 2. Get baseline previous constituents from the latest row of nasdaq_20_quarterly.csv
         prev_candidates = []
@@ -161,6 +181,7 @@ def main():
             if not df_n20_hist.empty:
                 latest_row = df_n20_hist.iloc[-1]
                 prev_candidates = [t.strip() for t in str(latest_row['Candidates']).split(',') if t.strip()]
+                prev_candidates = [t for t in prev_candidates if t not in exclude_tickers]
                 print(f"Loaded previous quarter ({latest_row['Quarter']}) constituents as baseline: {', '.join(prev_candidates)}")
 
         # 3. Check which NDX-100 tickers need metadata download
@@ -272,21 +293,21 @@ def main():
         ticker_ranks = {x[0]: r + 1 for r, x in enumerate(mcap_list)}
         ticker_mcaps = {x[0]: x[1] for x in mcap_list}
         
-        # 6. Apply Hysteresis Selection Logic (Enter <= 15, Stay <= 25)
+        # 6. Apply Hysteresis Selection Logic (Enter <= 20, Stay <= 30)
         if not prev_candidates:
             # First time selection: simple top 20
             tickers = [x[0] for x in mcap_list[:20]]
         else:
             retained = []
             for ticker in prev_candidates:
-                if ticker in ticker_ranks and ticker_ranks[ticker] <= 25:
+                if ticker in ticker_ranks and ticker_ranks[ticker] <= 30:
                     retained.append(ticker)
             if len(retained) < 20:
                 slots_needed = 20 - len(retained)
                 new_candidates = []
                 for ticker, mcap in mcap_list:
                     if ticker not in retained:
-                        if ticker_ranks[ticker] <= 15:
+                        if ticker_ranks[ticker] <= 20:
                             new_candidates.append(ticker)
                 retained.extend(new_candidates[:slots_needed])
             elif len(retained) > 20:

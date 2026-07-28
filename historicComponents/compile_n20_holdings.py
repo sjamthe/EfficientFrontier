@@ -55,6 +55,7 @@ df_stock_returns = df_stock_returns.mask(bad_returns_mask, 0.0)
 
 current_portfolio_value = 6000000.0
 holdings_list = []
+weights = pd.Series(dtype=float)
 
 for idx, row in df_candidates.iterrows():
     q_name = row['Quarter']
@@ -78,23 +79,30 @@ for idx, row in df_candidates.iterrows():
     if not valid_constituents:
         continue
         
-    # Cap-weighted proxy logic
-    mcap_proxies = {}
-    for t in valid_constituents:
-        shares = metadata.get(t, np.nan)
-        if pd.isna(shares) or shares <= 0:
-            shares = 1.0
-        mcap_proxies[t] = active_prices[t] * shares
-        
-    sum_mcap = sum(mcap_proxies.values())
-    if sum_mcap > 0:
-        weights = pd.Series({t: mcap_proxies[t] / sum_mcap for t in valid_constituents})
+    # Determine if we should rebalance (Q1 and Q3 only, plus first quarter)
+    should_rebalance = q_name.endswith('Q1') or q_name.endswith('Q3') or weights.empty
+    
+    if should_rebalance:
+        # Cap-weighted proxy logic
+        mcap_proxies = {}
+        for t in valid_constituents:
+            shares = metadata.get(t, np.nan)
+            if pd.isna(shares) or shares <= 0:
+                shares = 1.0
+            mcap_proxies[t] = active_prices[t] * shares
+            
+        sum_mcap = sum(mcap_proxies.values())
+        if sum_mcap > 0:
+            weights = pd.Series({t: mcap_proxies[t] / sum_mcap for t in valid_constituents})
+        else:
+            weights = pd.Series({t: 1.0 / len(valid_constituents) for t in valid_constituents})
+            
+        # Apply weight capping and re-normalize
+        weights = weights.clip(upper=0.10)
+        weights = weights / weights.sum()
     else:
-        weights = pd.Series({t: 1.0 / len(valid_constituents) for t in valid_constituents})
-        
-    # Apply weight capping and re-normalize
-    weights = weights.clip(upper=0.10)
-    weights = weights / weights.sum()
+        # Keep previous weights (drifted from last quarter)
+        valid_constituents = weights.index.tolist()
     
     # Save rebalancing holdings details
     for ticker in valid_constituents:
@@ -108,17 +116,24 @@ for idx, row in df_candidates.iterrows():
             'Total_Portfolio_Value_USD': current_portfolio_value
         })
         
-    # Update running portfolio value throughout the quarter daily
+    # Update running portfolio value and drift weights daily throughout the quarter
     for t in q_days:
         daily_stock_ret = df_stock_returns.loc[t, valid_constituents].fillna(0.0)
         port_ret = np.sum(weights * daily_stock_ret)
         current_portfolio_value = current_portfolio_value * (1.0 + port_ret)
+        
+        # Drift weights daily to match backtester logic exactly
+        drift_factor = (1.0 + daily_stock_ret) / (1.0 + port_ret)
+        weights = weights * drift_factor
+        sum_w = weights.sum()
+        if sum_w > 0:
+            weights = weights / sum_w
 
 df_holdings = pd.DataFrame(holdings_list)
 # Sort by Quarter and then Weight_Pct descending
 df_holdings = df_holdings.sort_values(['Quarter', 'Weight_Pct'], ascending=[True, False]).reset_index(drop=True)
 
-output_csv = os.path.join(data_dir, 'nasdaq20_quarterly_holdings.csv')
+output_csv = os.path.join(data_dir, 'nasdaq20_semiannual_holdings.csv')
 df_holdings.to_csv(output_csv, index=False)
 print(f"Saved holdings details to {output_csv}")
 print("Sample of first 15 rows:")

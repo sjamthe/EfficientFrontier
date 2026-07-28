@@ -103,9 +103,12 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
     previous_weights = pd.Series(dtype=float)
     current_portfolio_value = initial_value
     
-    # FIFO Tax lot tracking initialization
+    # FIFO Tax lot tracking and annual tax netting initialization
     portfolio_lots = {} # ticker -> list of dicts: {'buy_date': Timestamp, 'buy_price': float, 'shares': float}
     tax_realizations = []
+    st_carryforward = 0.0
+    lt_carryforward = 0.0
+    year_realizations = {}
     
     # Run backtest quarter by quarter
     for idx, row in df_quarters.iterrows():
@@ -137,31 +140,39 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
             
         N = len(valid_constituents)
         
-        # Weighting schemes
-        if weight_scheme == 'equal':
-            weights = pd.Series({t: 1.0 / N for t in valid_constituents})
-        elif weight_scheme == 'price':
-            sum_prices = active_prices[valid_constituents].sum()
-            weights = pd.Series({t: active_prices[t] / sum_prices if sum_prices > 0 else 1.0 / N for t in valid_constituents})
-        elif weight_scheme == 'cap':
-            mcap_proxies = {}
-            for t in valid_constituents:
-                shares = metadata.get(t, np.nan)
-                if pd.isna(shares) or shares <= 0:
-                    shares = 1.0 # fallback
-                mcap_proxies[t] = active_prices[t] * shares
-                
-            sum_mcap = sum(mcap_proxies.values())
-            if sum_mcap > 0:
-                weights = pd.Series({t: mcap_proxies[t] / sum_mcap for t in valid_constituents})
-            else:
+        # Determine if we should rebalance this quarter (Q1 and Q3 only, plus first quarter)
+        should_rebalance = q_name.endswith('Q1') or q_name.endswith('Q3') or previous_weights.empty
+        
+        if should_rebalance:
+            # Weighting schemes
+            if weight_scheme == 'equal':
                 weights = pd.Series({t: 1.0 / N for t in valid_constituents})
-            
-            # Apply 10% weight ceiling to prevent extreme outlier dominance and re-normalize
-            weights = weights.clip(upper=0.10)
-            weights = weights / weights.sum()
-            
-        current_weights = pd.Series(weights)
+            elif weight_scheme == 'price':
+                sum_prices = active_prices[valid_constituents].sum()
+                weights = pd.Series({t: active_prices[t] / sum_prices if sum_prices > 0 else 1.0 / N for t in valid_constituents})
+            elif weight_scheme == 'cap':
+                mcap_proxies = {}
+                for t in valid_constituents:
+                    shares = metadata.get(t, np.nan)
+                    if pd.isna(shares) or shares <= 0:
+                        shares = 1.0 # fallback
+                    mcap_proxies[t] = active_prices[t] * shares
+                    
+                sum_mcap = sum(mcap_proxies.values())
+                if sum_mcap > 0:
+                    weights = pd.Series({t: mcap_proxies[t] / sum_mcap for t in valid_constituents})
+                else:
+                    weights = pd.Series({t: 1.0 / N for t in valid_constituents})
+                
+                # Apply 10% weight ceiling to prevent extreme outlier dominance and re-normalize
+                weights = weights.clip(upper=0.10)
+                weights = weights / weights.sum()
+                
+            current_weights = pd.Series(weights)
+        else:
+            # Let the weights drift from the previous quarter, no rebalancing trades
+            current_weights = pd.Series(previous_weights)
+            valid_constituents = current_weights.index.tolist()
 
         # Calculate trades for the current quarter rebalancing and track FIFO tax lots
         all_tickers = sorted(list(set(previous_weights.index) | set(current_weights.index)))
@@ -229,6 +240,9 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
                             if oldest_lot['shares'] <= shares_to_sell:
                                 holding_days = (first_day - oldest_lot['buy_date']).days
                                 gain_loss = (price - oldest_lot['buy_price']) * oldest_lot['shares']
+                                tax_rate = 0.361 if holding_days > 365 else 0.49
+                                est_tax = gain_loss * tax_rate
+                                
                                 tax_realizations.append({
                                     'Quarter': q_name,
                                     'Sell_Date': first_day.strftime('%Y-%m-%d'),
@@ -239,14 +253,28 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
                                     'Sell_Price_USD': price,
                                     'Holding_Days': holding_days,
                                     'Tax_Term': 'Long-Term' if holding_days > 365 else 'Short-Term',
+                                    'Tax_Rate_Pct': tax_rate * 100.0,
+                                    'Estimated_Tax_USD': est_tax,
                                     'Gain_Loss_USD': gain_loss,
                                     'Gain_Loss_Pct': (price - oldest_lot['buy_price']) / oldest_lot['buy_price'] * 100.0 if oldest_lot['buy_price'] > 0 else 0.0
                                 })
+                                
+                                year = int(q_name[:4])
+                                if year not in year_realizations:
+                                    year_realizations[year] = {'st': 0.0, 'lt': 0.0}
+                                if holding_days > 365:
+                                    year_realizations[year]['lt'] += gain_loss
+                                else:
+                                    year_realizations[year]['st'] += gain_loss
+                                    
                                 shares_to_sell -= oldest_lot['shares']
                                 existing_lots.pop(0)
                             else:
                                 holding_days = (first_day - oldest_lot['buy_date']).days
                                 gain_loss = (price - oldest_lot['buy_price']) * shares_to_sell
+                                tax_rate = 0.361 if holding_days > 365 else 0.49
+                                est_tax = gain_loss * tax_rate
+                                
                                 tax_realizations.append({
                                     'Quarter': q_name,
                                     'Sell_Date': first_day.strftime('%Y-%m-%d'),
@@ -257,9 +285,20 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
                                     'Sell_Price_USD': price,
                                     'Holding_Days': holding_days,
                                     'Tax_Term': 'Long-Term' if holding_days > 365 else 'Short-Term',
+                                    'Tax_Rate_Pct': tax_rate * 100.0,
+                                    'Estimated_Tax_USD': est_tax,
                                     'Gain_Loss_USD': gain_loss,
                                     'Gain_Loss_Pct': (price - oldest_lot['buy_price']) / oldest_lot['buy_price'] * 100.0 if oldest_lot['buy_price'] > 0 else 0.0
                                 })
+                                
+                                year = int(q_name[:4])
+                                if year not in year_realizations:
+                                    year_realizations[year] = {'st': 0.0, 'lt': 0.0}
+                                if holding_days > 365:
+                                    year_realizations[year]['lt'] += gain_loss
+                                else:
+                                    year_realizations[year]['st'] += gain_loss
+                                    
                                 oldest_lot['shares'] -= shares_to_sell
                                 shares_to_sell = 0
                         portfolio_lots[ticker] = existing_lots
@@ -284,6 +323,53 @@ def calculate_portfolio_returns(constituent_csv_name, weight_scheme='equal', ret
             if sum_w > 0:
                 current_weights = current_weights / sum_w
                 
+        # Annual tax netting, loss carryforward, and tax cash outflows
+        is_year_end = q_name.endswith('Q4') or (idx == len(df_quarters) - 1)
+        if is_year_end:
+            year = int(q_name[:4])
+            if year in year_realizations:
+                st_g = year_realizations[year]['st']
+                lt_g = year_realizations[year]['lt']
+                
+                # Apply previous carryforwards
+                st_bal = st_g - st_carryforward
+                lt_bal = lt_g - lt_carryforward
+                
+                # Reset carryforwards
+                st_carryforward = 0.0
+                lt_carryforward = 0.0
+                
+                # Netting
+                if st_bal < 0 and lt_bal > 0:
+                    lt_bal += st_bal
+                    st_bal = 0.0
+                    if lt_bal < 0:
+                        lt_carryforward = -lt_bal
+                        lt_bal = 0.0
+                elif lt_bal < 0 and st_bal > 0:
+                    st_bal += lt_bal
+                    lt_bal = 0.0
+                    if st_bal < 0:
+                        st_carryforward = -st_bal
+                        st_bal = 0.0
+                elif st_bal < 0 and lt_bal < 0:
+                    st_carryforward = -st_bal
+                    lt_carryforward = -lt_bal
+                    st_bal = 0.0
+                    lt_bal = 0.0
+                    
+                # Tax rates: ST = 49%, LT = 36.10%
+                st_tax = max(0.0, st_bal) * 0.49
+                lt_tax = max(0.0, lt_bal) * 0.361
+                total_annual_tax = st_tax + lt_tax
+                
+                if total_annual_tax > 0.0:
+                    last_day = q_days[-1]
+                    # Subtract from the daily return of the last day of the year to reflect post-tax compounding in return series
+                    tax_ratio = total_annual_tax / current_portfolio_value
+                    portfolio_daily_returns.loc[last_day] -= tax_ratio
+                    current_portfolio_value -= total_annual_tax
+                    
         # Track drifted weights at the end of the quarter to compare with next quarter's target weights
         previous_weights = pd.Series(current_weights)
 
