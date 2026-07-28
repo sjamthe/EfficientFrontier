@@ -89,7 +89,7 @@ def main():
                         help="Query date in YYYY-MM-DD format to get historical constituents and weights.")
     args = parser.parse_args()
 
-    # Step 1: Get constituents
+    # Step 1: Get query date
     if args.date:
         query_date_str = args.date
         try:
@@ -97,56 +97,14 @@ def main():
         except ValueError:
             print(f"Error: Date format must be YYYY-MM-DD (got: {query_date_str})")
             return
-            
-        if not os.path.exists(nasdaq_csv):
-            print(f"Error: Nasdaq quarterly history file not found at {nasdaq_csv}")
-            return
-            
-        df_hist = pd.read_csv(nasdaq_csv)
-        df_hist['Start_Date_parsed'] = pd.to_datetime(df_hist['Start_Date']).dt.date
-        df_hist['End_Date_parsed'] = pd.to_datetime(df_hist['End_Date']).dt.date
-        
-        matching_rows = df_hist[(df_hist['Start_Date_parsed'] <= query_date) & (df_hist['End_Date_parsed'] >= query_date)]
-        if not matching_rows.empty:
-            matching_row = matching_rows.iloc[0]
-            quarter_name = matching_row['Quarter']
-            tickers = [t.strip() for t in str(matching_row['Constituents']).split(',') if t.strip()]
-            df_const = pd.DataFrame({
-                'Ticker': tickers,
-                'Company': tickers
-            })
-            print(f"Found Nasdaq-100 constituents for {query_date_str} in quarter {quarter_name} ({len(tickers)} tickers).")
-        else:
-            latest_row = df_hist.iloc[-1]
-            latest_end = pd.to_datetime(latest_row['End_Date']).date()
-            if query_date > latest_end:
-                print(f"Query date {query_date_str} is after the latest date in history ({latest_end}). Using latest history row.")
-                tickers = [t.strip() for t in str(latest_row['Constituents']).split(',') if t.strip()]
-                df_const = pd.DataFrame({
-                    'Ticker': tickers,
-                    'Company': tickers
-                })
-            else:
-                first_row = df_hist.iloc[0]
-                first_start = pd.to_datetime(first_row['Start_Date']).date()
-                print(f"Query date {query_date_str} is before the earliest date in history ({first_start}). Using earliest history row.")
-                tickers = [t.strip() for t in str(first_row['Constituents']).split(',') if t.strip()]
-                df_const = pd.DataFrame({
-                    'Ticker': tickers,
-                    'Company': tickers
-                })
     else:
-        df_const = fetch_constituents_from_wikipedia()
-        if df_const is None:
-            df_const = load_local_history_fallback()
-            if df_const is None:
-                print("Error: Could not retrieve Nasdaq-100 constituents list. Exiting.")
-                return
+        query_date = datetime.now().date()
+        query_date_str = query_date.strftime('%Y-%m-%d')
 
-    tickers = df_const['Ticker'].tolist()
-    ticker_to_company = dict(zip(df_const['Ticker'], df_const['Company']))
-
-    # Step 2: Load metadata cache (Shares Outstanding)
+    # Paths for files
+    nasdaq20_csv = os.path.join(data_dir, 'nasdaq_20_quarterly.csv')
+    
+    # Load metadata cache (Shares Outstanding)
     metadata_cache = {}
     if os.path.exists(metadata_csv):
         try:
@@ -159,140 +117,280 @@ def main():
         except Exception as e:
             print(f"Warning: Could not read {metadata_csv}: {e}")
 
-    # Step 3: Check which tickers need metadata download
-    missing_tickers = []
-    if args.refresh_shares:
-        missing_tickers = tickers
-    else:
-        for ticker in tickers:
-            if ticker not in metadata_cache or pd.isna(metadata_cache[ticker].get('Shares_Outstanding')):
-                missing_tickers.append(ticker)
-
-    # Fetch missing metadata
-    cache_updated = False
-    if missing_tickers:
-        print(f"\nFetching shares outstanding for {len(missing_tickers)} tickers from yfinance...")
-        for idx, ticker in enumerate(missing_tickers):
-            print(f"[{idx+1}/{len(missing_tickers)}] Fetching {ticker} info...", end="\r")
-            try:
-                t_obj = yf.Ticker(ticker)
-                info = t_obj.info
-                shares = info.get('sharesOutstanding', np.nan)
-                mcap = info.get('marketCap', np.nan)
-                
-                # Check for None values
-                if shares is None: shares = np.nan
-                if mcap is None: mcap = np.nan
-
-                if ticker not in metadata_cache:
-                    metadata_cache[ticker] = {}
-                metadata_cache[ticker]['Shares_Outstanding'] = shares
-                metadata_cache[ticker]['Market_Cap'] = mcap
-                cache_updated = True
-            except Exception as e:
-                pass
-        print(f"\nDone fetching metadata.")
-
-    # Save metadata cache if updated
-    if cache_updated:
-        # Load existing metadata to update rather than overwrite completely
-        df_meta_existing = pd.DataFrame()
-        if os.path.exists(metadata_csv):
-            try:
-                df_meta_existing = pd.read_csv(metadata_csv)
-            except Exception:
-                pass
+    # Check if query_date is covered by our historical nasdaq_20_quarterly.csv
+    is_historical = False
+    quarter_name = None
+    tickers = []
+    
+    if os.path.exists(nasdaq20_csv):
+        df_n20_hist = pd.read_csv(nasdaq20_csv)
+        df_n20_hist['Start_Date_parsed'] = pd.to_datetime(df_n20_hist['Start_Date']).dt.date
+        df_n20_hist['End_Date_parsed'] = pd.to_datetime(df_n20_hist['End_Date']).dt.date
         
-        # Merge new metadata
-        new_rows = []
-        for ticker, data in metadata_cache.items():
-            new_rows.append({
-                'Ticker': ticker,
-                'Shares_Outstanding': data.get('Shares_Outstanding', np.nan),
-                'Market_Cap': data.get('Market_Cap', np.nan)
+        matching_rows = df_n20_hist[(df_n20_hist['Start_Date_parsed'] <= query_date) & (df_n20_hist['End_Date_parsed'] >= query_date)]
+        if not matching_rows.empty:
+            matching_row = matching_rows.iloc[0]
+            quarter_name = matching_row['Quarter']
+            tickers = [t.strip() for t in str(matching_row['Candidates']).split(',') if t.strip()]
+            is_historical = True
+            df_const = pd.DataFrame({
+                'Ticker': tickers,
+                'Company': tickers
             })
-        df_meta_new = pd.DataFrame(new_rows)
-        
-        if not df_meta_existing.empty:
-            # Combine, keeping the new metadata where available
-            df_meta_combined = pd.concat([df_meta_new, df_meta_existing]).drop_duplicates(subset=['Ticker'], keep='first')
-        else:
-            df_meta_combined = df_meta_new
-            
-        df_meta_combined = df_meta_combined.sort_values('Ticker')
-        df_meta_combined.to_csv(metadata_csv, index=False)
-        print(f"Updated metadata cache saved to {metadata_csv}")
+            print(f"Found historical NASDAQ-20 constituents for {query_date_str} in quarter {quarter_name} ({len(tickers)} tickers).")
 
-    # Step 4: Download stock prices
-    if args.date:
-        # end_dt is query_date + 1 day (exclusive in yfinance)
+    if not is_historical:
+        # We must perform the scan live and apply the hysteresis selection rule!
+        print(f"Query date {query_date_str} is outside historical NASDAQ-20 database. Computing live constituents via hysteresis...")
+        
+        # 1. Fetch current Nasdaq-100 constituents from Wikipedia
+        df_ndx100 = fetch_constituents_from_wikipedia()
+        if df_ndx100 is None:
+            df_ndx100 = load_local_history_fallback()
+            if df_ndx100 is None:
+                print("Error: Could not retrieve current Nasdaq-100 constituents list. Exiting.")
+                return
+                
+        ndx100_tickers = df_ndx100['Ticker'].tolist()
+        ticker_to_company = dict(zip(df_ndx100['Ticker'], df_ndx100['Company']))
+        
+        # 2. Get baseline previous constituents from the latest row of nasdaq_20_quarterly.csv
+        prev_candidates = []
+        if os.path.exists(nasdaq20_csv):
+            df_n20_hist = pd.read_csv(nasdaq20_csv)
+            if not df_n20_hist.empty:
+                latest_row = df_n20_hist.iloc[-1]
+                prev_candidates = [t.strip() for t in str(latest_row['Candidates']).split(',') if t.strip()]
+                print(f"Loaded previous quarter ({latest_row['Quarter']}) constituents as baseline: {', '.join(prev_candidates)}")
+
+        # 3. Check which NDX-100 tickers need metadata download
+        missing_tickers = []
+        if args.refresh_shares:
+            missing_tickers = ndx100_tickers
+        else:
+            for ticker in ndx100_tickers:
+                if ticker not in metadata_cache or pd.isna(metadata_cache[ticker].get('Shares_Outstanding')):
+                    missing_tickers.append(ticker)
+                    
+        # Fetch missing metadata
+        cache_updated = False
+        if missing_tickers:
+            print(f"\nFetching shares outstanding for {len(missing_tickers)} tickers from yfinance...")
+            for idx, ticker in enumerate(missing_tickers):
+                print(f"[{idx+1}/{len(missing_tickers)}] Fetching {ticker} info...", end="\r")
+                try:
+                    t_obj = yf.Ticker(ticker)
+                    info = t_obj.info
+                    shares = info.get('sharesOutstanding', np.nan)
+                    mcap = info.get('marketCap', np.nan)
+                    
+                    if shares is None: shares = np.nan
+                    if mcap is None: mcap = np.nan
+                    
+                    if ticker not in metadata_cache:
+                        metadata_cache[ticker] = {}
+                    metadata_cache[ticker]['Shares_Outstanding'] = shares
+                    metadata_cache[ticker]['Market_Cap'] = mcap
+                    cache_updated = True
+                except Exception:
+                    pass
+            print(f"\nDone fetching metadata.")
+
+        # Save metadata cache if updated
+        if cache_updated:
+            df_meta_existing = pd.DataFrame()
+            if os.path.exists(metadata_csv):
+                try:
+                    df_meta_existing = pd.read_csv(metadata_csv)
+                except Exception:
+                    pass
+            new_rows = []
+            for t_code, data in metadata_cache.items():
+                new_rows.append({
+                    'Ticker': t_code,
+                    'Shares_Outstanding': data.get('Shares_Outstanding', np.nan),
+                    'Market_Cap': data.get('Market_Cap', np.nan)
+                })
+            df_meta_new = pd.DataFrame(new_rows)
+            if not df_meta_existing.empty:
+                df_meta_combined = pd.concat([df_meta_new, df_meta_existing]).drop_duplicates(subset=['Ticker'], keep='first')
+            else:
+                df_meta_combined = df_meta_new
+            df_meta_combined = df_meta_combined.sort_values('Ticker')
+            df_meta_combined.to_csv(metadata_csv, index=False)
+            print(f"Updated metadata cache saved to {metadata_csv}")
+
+        # 4. Download stock prices for all NDX-100 constituents to rank them
+        if args.date:
+            end_dt = query_date + timedelta(days=1)
+            start_dt = query_date - timedelta(days=10)
+            start_str = start_dt.strftime('%Y-%m-%d')
+            end_str = end_dt.strftime('%Y-%m-%d')
+            print(f"\nDownloading stock prices for Nasdaq-100 constituents between {start_str} and {end_str}...")
+            df_prices = yf.download(ndx100_tickers, start=start_str, end=end_str, progress=False)
+        else:
+            print(f"\nDownloading current stock prices for Nasdaq-100 constituents...")
+            df_prices = yf.download(ndx100_tickers, period='5d', progress=False)
+
+        latest_prices = {}
+        for ticker in ndx100_tickers:
+            price = np.nan
+            if not df_prices.empty:
+                col_to_use = 'Adj Close'
+                if (col_to_use, ticker) in df_prices.columns:
+                    series = df_prices[(col_to_use, ticker)].dropna()
+                    if not series.empty:
+                        price = series.iloc[-1]
+                elif ('Close', ticker) in df_prices.columns:
+                    series = df_prices[('Close', ticker)].dropna()
+                    if not series.empty:
+                        price = series.iloc[-1]
+            if pd.isna(price):
+                try:
+                    t_obj = yf.Ticker(ticker)
+                    if args.date:
+                        hist = t_obj.history(start=start_str, end=end_str)
+                    else:
+                        hist = t_obj.history(period='5d')
+                    if not hist.empty:
+                        price = hist['Close'].iloc[-1]
+                except Exception:
+                    pass
+            if not pd.isna(price) and price > 0:
+                latest_prices[ticker] = price
+
+        # 5. Compute market cap and rank
+        mcap_list = []
+        for ticker in ndx100_tickers:
+            price = latest_prices.get(ticker, np.nan)
+            shares = metadata_cache.get(ticker, {}).get('Shares_Outstanding', np.nan)
+            if pd.isna(price) or pd.isna(shares) or shares <= 0:
+                continue
+            mcap_list.append((ticker, price * shares))
+            
+        mcap_list = sorted(mcap_list, key=lambda x: x[1], reverse=True)
+        ticker_ranks = {x[0]: r + 1 for r, x in enumerate(mcap_list)}
+        ticker_mcaps = {x[0]: x[1] for x in mcap_list}
+        
+        # 6. Apply Hysteresis Selection Logic (Enter <= 15, Stay <= 25)
+        if not prev_candidates:
+            # First time selection: simple top 20
+            tickers = [x[0] for x in mcap_list[:20]]
+        else:
+            retained = []
+            for ticker in prev_candidates:
+                if ticker in ticker_ranks and ticker_ranks[ticker] <= 25:
+                    retained.append(ticker)
+            if len(retained) < 20:
+                slots_needed = 20 - len(retained)
+                new_candidates = []
+                for ticker, mcap in mcap_list:
+                    if ticker not in retained:
+                        if ticker_ranks[ticker] <= 15:
+                            new_candidates.append(ticker)
+                retained.extend(new_candidates[:slots_needed])
+            elif len(retained) > 20:
+                retained = sorted(retained, key=lambda x: ticker_mcaps[x], reverse=True)[:20]
+            tickers = retained
+            
+        df_const = pd.DataFrame({
+            'Ticker': tickers,
+            'Company': [ticker_to_company.get(t, t) for t in tickers]
+        })
+        print(f"Selected NASDAQ-20 constituents using hysteresis: {', '.join(tickers)}")
+        
+    else:
+        # Historical quarter is matched: tickers are already retrieved
+        # We only need to fetch prices and shares outstanding for these 20 tickers
+        # Step 2: Ensure metadata contains these tickers (fetch if missing)
+        missing_tickers = [t for t in tickers if t not in metadata_cache or pd.isna(metadata_cache[t].get('Shares_Outstanding'))]
+        cache_updated = False
+        if missing_tickers:
+            print(f"\nFetching shares outstanding for historical constituents: {', '.join(missing_tickers)}")
+            for idx, ticker in enumerate(missing_tickers):
+                try:
+                    t_obj = yf.Ticker(ticker)
+                    info = t_obj.info
+                    shares = info.get('sharesOutstanding', np.nan)
+                    mcap = info.get('marketCap', np.nan)
+                    if shares is None: shares = np.nan
+                    if mcap is None: mcap = np.nan
+                    if ticker not in metadata_cache:
+                        metadata_cache[ticker] = {}
+                    metadata_cache[ticker]['Shares_Outstanding'] = shares
+                    metadata_cache[ticker]['Market_Cap'] = mcap
+                    cache_updated = True
+                except Exception:
+                    pass
+            
+        if cache_updated:
+            df_meta_existing = pd.DataFrame()
+            if os.path.exists(metadata_csv):
+                try:
+                    df_meta_existing = pd.read_csv(metadata_csv)
+                except Exception:
+                    pass
+            new_rows = []
+            for t_code, data in metadata_cache.items():
+                new_rows.append({
+                    'Ticker': t_code,
+                    'Shares_Outstanding': data.get('Shares_Outstanding', np.nan),
+                    'Market_Cap': data.get('Market_Cap', np.nan)
+                })
+            df_meta_new = pd.DataFrame(new_rows)
+            if not df_meta_existing.empty:
+                df_meta_combined = pd.concat([df_meta_new, df_meta_existing]).drop_duplicates(subset=['Ticker'], keep='first')
+            else:
+                df_meta_combined = df_meta_new
+            df_meta_combined = df_meta_combined.sort_values('Ticker')
+            df_meta_combined.to_csv(metadata_csv, index=False)
+            
+        # Download prices for just these 20 tickers
         end_dt = query_date + timedelta(days=1)
-        # start_dt is query_date - 10 days to guarantee at least one trading day is captured
         start_dt = query_date - timedelta(days=10)
         start_str = start_dt.strftime('%Y-%m-%d')
         end_str = end_dt.strftime('%Y-%m-%d')
-        print(f"\nDownloading historical stock prices for {len(tickers)} tickers between {start_str} and {end_str}...")
-        try:
-            df_prices = yf.download(tickers, start=start_str, end=end_str, progress=False)
-        except Exception as e:
-            print(f"Error downloading prices in bulk: {e}")
-            df_prices = pd.DataFrame()
-    else:
-        print(f"\nDownloading current stock prices for {len(tickers)} tickers...")
-        try:
-            df_prices = yf.download(tickers, period='5d', progress=False)
-        except Exception as e:
-            print(f"Error downloading prices in bulk: {e}")
-            # Try a smaller fallback or loop
-            df_prices = pd.DataFrame()
-
-    latest_prices = {}
-    failed_prices = []
-    
-    for ticker in tickers:
-        price = np.nan
-        if not df_prices.empty:
-            # Extract price for ticker
-            # yfinance download columns are MultiIndex: (Metric, Ticker)
-            col_to_use = 'Adj Close'
-            if (col_to_use, ticker) in df_prices.columns:
-                series = df_prices[(col_to_use, ticker)].dropna()
-                if not series.empty:
-                    price = series.iloc[-1]
-            elif ('Close', ticker) in df_prices.columns:
-                series = df_prices[('Close', ticker)].dropna()
-                if not series.empty:
-                    price = series.iloc[-1]
-                    
-        # Fallback to individual history if missing
-        if pd.isna(price):
-            try:
-                t_obj = yf.Ticker(ticker)
-                if args.date:
+        print(f"\nDownloading stock prices for {len(tickers)} constituents around {query_date_str}...")
+        df_prices = yf.download(tickers, start=start_str, end=end_str, progress=False)
+        
+        latest_prices = {}
+        for ticker in tickers:
+            price = np.nan
+            if not df_prices.empty:
+                col_to_use = 'Adj Close'
+                if (col_to_use, ticker) in df_prices.columns:
+                    series = df_prices[(col_to_use, ticker)].dropna()
+                    if not series.empty:
+                        price = series.iloc[-1]
+                elif ('Close', ticker) in df_prices.columns:
+                    series = df_prices[('Close', ticker)].dropna()
+                    if not series.empty:
+                        price = series.iloc[-1]
+            if pd.isna(price):
+                try:
+                    t_obj = yf.Ticker(ticker)
                     hist = t_obj.history(start=start_str, end=end_str)
-                else:
-                    hist = t_obj.history(period='5d')
-                if not hist.empty:
-                    price = hist['Close'].iloc[-1]
-            except Exception:
-                pass
-                
-        if not pd.isna(price) and price > 0:
-            latest_prices[ticker] = price
-        else:
-            failed_prices.append(ticker)
-
-    if failed_prices:
-        print(f"Warning: Could not fetch price for tickers: {', '.join(failed_prices)}")
+                    if not hist.empty:
+                        price = hist['Close'].iloc[-1]
+                except Exception:
+                    pass
+            if not pd.isna(price) and price > 0:
+                latest_prices[ticker] = price
 
     # Step 5: Compute current market capitalization and select top 20
     valid_constituents = []
+    ticker_to_company = dict(zip(df_const['Ticker'], df_const['Company']))
     for ticker in tickers:
         price = latest_prices.get(ticker, np.nan)
         shares = metadata_cache.get(ticker, {}).get('Shares_Outstanding', np.nan)
         
-        if pd.isna(price) or pd.isna(shares) or shares <= 0:
-            continue
+        # Fallback to 1.0 if shares outstanding is missing to match backtest behavior
+        if pd.isna(shares) or shares <= 0:
+            shares = 1.0
+            
+        if pd.isna(price) or price <= 0:
+            # Fallback to 0 or last known close
+            price = 0.0
             
         mcap = price * shares
         valid_constituents.append({
@@ -303,28 +401,29 @@ def main():
             'Market_Cap_USD': mcap
         })
 
-    df_universe = pd.DataFrame(valid_constituents)
-    if df_universe.empty:
+    df_top20 = pd.DataFrame(valid_constituents)
+    if df_top20.empty:
         print("Error: No constituents with valid prices and shares outstanding. Exiting.")
         return
 
-    # Sort descending by market cap and take top 20
-    df_top20 = df_universe.sort_values(by='Market_Cap_USD', ascending=False).head(20).reset_index(drop=True)
+    # Sort descending by market cap (keep the rank order correct)
+    df_top20 = df_top20.sort_values(by='Market_Cap_USD', ascending=False).reset_index(drop=True)
 
     # Step 6: Calculate weights
     if args.weight_scheme == 'cap':
         total_mcap = df_top20['Market_Cap_USD'].sum()
-        df_top20['Weight'] = df_top20['Market_Cap_USD'] / total_mcap
+        df_top20['Weight'] = df_top20['Market_Cap_USD'] / (total_mcap if total_mcap > 0 else 1.0)
         # Apply 10% weight ceiling to prevent extreme outlier dominance and re-normalize
         df_top20['Weight'] = df_top20['Weight'].clip(upper=0.10)
         df_top20['Weight'] = df_top20['Weight'] / df_top20['Weight'].sum()
     else:
-        df_top20['Weight'] = 0.05 # 5% each
+        df_top20['Weight'] = 1.0 / len(df_top20)
 
     # Step 7: Calculate allocations if portfolio value is provided
     if args.portfolio_value is not None:
         df_top20['Allocation_USD'] = args.portfolio_value * df_top20['Weight']
-        df_top20['Shares_To_Buy'] = df_top20['Allocation_USD'] / df_top20['Price']
+        df_top20['Shares_To_Buy'] = df_top20['Allocation_USD'] / df_top20['Price'].replace(0.0, np.nan)
+        df_top20['Shares_To_Buy'] = df_top20['Shares_To_Buy'].fillna(0.0)
         df_top20['Shares_To_Buy_Rounded'] = df_top20['Shares_To_Buy'].round()
 
     # Save to CSV
