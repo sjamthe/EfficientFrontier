@@ -470,25 +470,25 @@ def main():
     print("=" * 105)
     
     if args.portfolio_value is not None:
-        headers = f"{'Rank':<5}{'Ticker':<8}{'Company Name':<30}{'Price':<10}{'Market Cap ($B)':<18}{'Weight (%)':<12}{'Allocation ($)':<16}{'Shares to Buy':<12}"
+        headers = f"{'Rank':<5}{'Ticker':<8}{'Company Name':<30}{'Price':<10}{'Shares Outstanding':<20}{'Market Cap ($B)':<18}{'Weight (%)':<12}{'Allocation ($)':<16}{'Shares to Buy':<12}"
         print(headers)
         print("-" * 105)
         for idx, row in df_top20.iterrows():
             mcap_b = row['Market_Cap_USD'] / 1e9
             weight_pct = row['Weight'] * 100
-            print(f"{idx+1:<5}{row['Ticker']:<8}{row['Company'][:28]:<30}${row['Price']:>8.2f}  ${mcap_b:>13.2f}B  {weight_pct:>9.2f}%    ${row['Allocation_USD']:>12,.2f}  {int(row['Shares_To_Buy_Rounded']):>10}")
+            print(f"{idx+1:<5}{row['Ticker']:<8}{row['Company'][:28]:<30} {row['Price']:>8.2f} {int(row['Shares_Outstanding']):<20} {mcap_b:>13.2f} {weight_pct:>9.2f}% ${row['Allocation_USD']:>12,.2f} {int(row['Shares_To_Buy_Rounded']):>10}")
         print("-" * 105)
         total_weight_pct = df_top20['Weight'].sum() * 100
         total_allocation = df_top20['Allocation_USD'].sum()
-        print(f"{'TOTAL':<43}  {df_top20['Market_Cap_USD'].sum()/1e9:>13.2f}B  {total_weight_pct:>9.2f}%    ${total_allocation:>12,.2f}")
+        print(f"{'TOTAL':<43} {df_top20['Market_Cap_USD'].sum()/1e9:>13.2f} {total_weight_pct:>9.2f}% {total_allocation:>12,.2f}")
     else:
-        headers = f"{'Rank':<5}{'Ticker':<8}{'Company Name':<35}{'Price':<12}{'Market Cap ($B)':<20}{'Weight (%)':<12}"
+        headers = f"{'Rank':<5}{'Ticker':<8}{'Company Name':<35}{'Price':<12}{'Shares Outstanding':<20}{'Market Cap ($B)':<20}{'Weight (%)':<12}"
         print(headers)
         print("-" * 105)
         for idx, row in df_top20.iterrows():
             mcap_b = row['Market_Cap_USD'] / 1e9
             weight_pct = row['Weight'] * 100
-            print(f"{idx+1:<5}{row['Ticker']:<8}{row['Company'][:33]:<35}${row['Price']:>9.2f}  ${mcap_b:>15.2f}B  {weight_pct:>9.2f}%")
+            print(f"{idx+1:<5}{row['Ticker']:<8}{row['Company'][:33]:<35} {row['Price']:>9.2f} {int(row['Shares_Outstanding']):<20} {mcap_b:>15.2f} {weight_pct:>9.2f}%")
         print("-" * 105)
         total_weight_pct = df_top20['Weight'].sum() * 100
         print(f"{'TOTAL':<48}  {df_top20['Market_Cap_USD'].sum()/1e9:>15.2f}B  {total_weight_pct:>9.2f}%")
